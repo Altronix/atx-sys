@@ -1,3 +1,3 @@
 [submodule "external/libubootenv"]
 	path = external/libubootenv
-	url = https://github.com/sbabic/libubootenv
+	url = https://github.com/tomzbench/libubootenv.git
