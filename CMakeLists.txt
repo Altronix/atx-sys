@@ -33,5 +33,6 @@ if(ENABLE_TESTING)
 endif()
 
 # Modules
+add_subdirectory(src)
 
 # Apps
