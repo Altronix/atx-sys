@@ -1,0 +1,10 @@
+set(SOURCES env.c)
+set(HEADERS env.h)
+
+if(${ATX_UPDATE_ENV} STREQUAL "EMU")
+  list(APPEND SOURCES env_emu.c)
+elseif(${ATX_UPDATE_ENV} STREQUAL "UBOOT")
+  list(APPEND SOURCES env_uboot.c)
+else()
+  message(FATAL_ERROR "Please select bootloader environment!")
+endif()
