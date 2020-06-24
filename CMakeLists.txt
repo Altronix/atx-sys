@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9.3...3.16)
+cmake_minimum_required(VERSION 3.13...3.16)
 project(atx-update)
 
 find_package(Git)
@@ -29,7 +29,8 @@ endif()
 
 # Test?
 if(ENABLE_TESTING)
-
+  add_subdirectory(test/mocks/libubootenv)
+  add_subdirectory(test/env)
 endif()
 
 # Modules
