@@ -19,7 +19,8 @@ ExternalProject_Add(libubootenv-project
                     LIST_SEPARATOR |
                     CMAKE_ARGS 
 		        -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-		        -DCMAKE_INSTALL_LIBDIR=<INSTALL_DIR>/lib)
+		        -DCMAKE_INSTALL_LIBDIR=<INSTALL_DIR>/lib
+                        -DBUILD_DOC:BOOL=FALSE)
 
 ExternalProject_Get_Property(libubootenv-project install_dir)
 set(libubootenv_INCLUDE_DIR ${install_dir}/include)

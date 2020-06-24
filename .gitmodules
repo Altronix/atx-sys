@@ -1,3 +1,6 @@
 [submodule "external/libubootenv"]
 	path = external/libubootenv
 	url = https://github.com/tomzbench/libubootenv.git
+[submodule "external/cmocka"]
+	path = external/cmocka
+	url = git://git.cryptomilk.org/projects/cmocka.git

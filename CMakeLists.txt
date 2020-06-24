@@ -29,6 +29,7 @@ endif()
 
 # Test?
 if(ENABLE_TESTING)
+  include(cmake/cmocka.cmake)
   add_subdirectory(test/mocks/libubootenv)
   add_subdirectory(test/env)
 endif()

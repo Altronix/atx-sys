@@ -1,5 +1,5 @@
 add_executable(test-env main.c)
-target_link_libraries(test-env libubootenv-static mock-libubootenv)
+target_link_libraries(test-env libubootenv-static mock-libubootenv cmocka)
 mock_libubootenv_linker_flags(libubootenv_link_flags)
 set(wrap_flags "${libubootenv_link_flags}")
 set_target_properties(test-env PROPERTIES LINK_FLAGS ${wrap_flags})
