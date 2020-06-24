@@ -1,0 +1,7 @@
+add_executable(test-env main.c)
+target_link_libraries(test-env libubootenv-static mock-libubootenv)
+mock_libubootenv_linker_flags(libubootenv_link_flags)
+set(wrap_flags "${libubootenv_link_flags}")
+set_target_properties(test-env PROPERTIES LINK_FLAGS ${wrap_flags})
+add_test(NAME test-env COMMAND test-env)
+install(TARGETS test-env DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
