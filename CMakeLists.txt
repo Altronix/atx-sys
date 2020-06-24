@@ -29,6 +29,7 @@ endif()
 
 # Test?
 if(ENABLE_TESTING)
+  set(CMAKE_BUILD_TYPE Debug)
   enable_testing()
   include(CTest)
   include(cmake/cmocka.cmake)

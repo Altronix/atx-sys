@@ -45,9 +45,12 @@ libubootenv_spy_deinit()
 void
 libubootenv_spy_push_iter(const char* in_key, const char* in_val)
 {
-    char* key = malloc(strlen(in_key));
-    char* val = malloc(strlen(in_val));
+    int key_len = strlen(in_key), val_len = strlen(in_val);
+    char* key = malloc(key_len + 1);
+    char* val = malloc(val_len + 1);
     assert(key && val);
+    snprintf(key, key_len + 1, "%s", in_key);
+    snprintf(val, val_len + 1, "%s", in_val);
     key_list_push(keys, &key);
     val_list_push(vals, &val);
 }
@@ -55,7 +58,7 @@ libubootenv_spy_push_iter(const char* in_key, const char* in_val)
 void*
 __wrap_libuboot_iterator(struct uboot_ctx* ctx, void* next)
 {
-    static bool result = false;
+    static bool result = true;
     if (g_next) {
         char *key = NULL, *val = NULL;
         key = key_list_pop(keys);
@@ -65,8 +68,7 @@ __wrap_libuboot_iterator(struct uboot_ctx* ctx, void* next)
     } else {
         g_next = true;
     }
-    result = key_list_size(keys) ? true : false;
-    return &result;
+    return key_list_size(keys) ? &result : NULL;
 }
 
 const char*

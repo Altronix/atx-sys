@@ -64,12 +64,13 @@ env_read(env_s* env, char* buff, uint32_t* b)
         value = libuboot_getvalue(iter);
         *b += snprintf(&buff[*b], len - *b, "\"%s\":\"%s\"", name, value);
         if ((iter = libuboot_iterator(env->ctx, iter))) {
-            *b += 1;
             if (*b < len) buff[*b] = ',';
+            *b += 1;
         }
     }
-    *b += 1;
     if (*b < len) buff[*b] = '}';
+    *b += 1;
+    if (*b < len) buff[*b] = 0;
     return *b < len ? 0 : -1;
 }
 

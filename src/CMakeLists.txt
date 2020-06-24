@@ -1,4 +1,9 @@
-set(HEADERS env.h)
+set(SOURCES sys.c)
+set(HEADERS sys.h env.h)
+
+set(LIBS m z)
+set(LIBS_STATIC ${LIBS})
+set(LIBS_SHARED ${LIBS})
 
 if(${ATX_UPDATE_ENV} STREQUAL "EMU")
   list(APPEND SOURCES env_emu.c)
