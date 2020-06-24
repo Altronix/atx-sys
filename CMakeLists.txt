@@ -13,9 +13,10 @@ find_package(Threads)
 # Compiler stuff
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE on)
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 # Note buildroot sets BUILD_SHARED_LIBS
-option(BUILD_SHARED "Whether or not to build the shared object"  ON)
+option(BUILD_SHARED "Whether or not to build the shared object" ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
 
 # Target environment
@@ -28,6 +29,7 @@ endif()
 
 # Test?
 if(ENABLE_TESTING)
+
 endif()
 
 # Modules
