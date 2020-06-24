@@ -1,4 +1,3 @@
-set(SOURCES env.c)
 set(HEADERS env.h)
 
 if(${ATX_UPDATE_ENV} STREQUAL "EMU")
@@ -10,6 +9,10 @@ elseif(${ATX_UPDATE_ENV} STREQUAL "UBOOT")
 else()
   message(FATAL_ERROR "Please select bootloader environment!")
 endif()
+
+add_library(atx-update-test STATIC ${SOURCES} ${HEADERS})
+target_link_libraries(atx-update-test ${LIBS_STATIC})
+target_include_directories(atx-update-test PUBLIC ./)
 
 add_library(atx-update-static STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(atx-update-static ${LIBS_STATIC})
