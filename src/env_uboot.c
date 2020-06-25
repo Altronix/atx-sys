@@ -42,7 +42,7 @@ ERR:
 }
 
 void
-env_close(env_s* env)
+env_deinit(env_s* env)
 {
     libuboot_close(env->ctx);
     libuboot_exit(env->ctx);
