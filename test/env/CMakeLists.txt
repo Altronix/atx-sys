@@ -1,11 +1,11 @@
 add_executable(test-env main.c)
 target_link_libraries(test-env 
   atx-update-test 
-  libubootenv-static 
-  mock-libubootenv 
+  ubootenv-static
+  ubootenv-mock
   cmocka)
-mock_libubootenv_linker_flags(libubootenv_link_flags)
-set(wrap_flags "${libubootenv_link_flags}")
+ubootenv_mock_linker_flags(ubootenv_link_flags)
+set(wrap_flags "${ubootenv_link_flags}")
 set_target_properties(test-env PROPERTIES LINK_FLAGS ${wrap_flags})
 add_test(NAME test-env COMMAND test-env)
 install(TARGETS test-env DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

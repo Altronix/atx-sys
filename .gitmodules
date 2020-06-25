@@ -4,3 +4,6 @@
 [submodule "external/cmocka"]
 	path = external/cmocka
 	url = git://git.cryptomilk.org/projects/cmocka.git
+[submodule "external/mongoose"]
+	path = external/mongoose
+	url = https://github.com/cesanta/mongoose.git

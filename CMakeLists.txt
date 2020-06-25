@@ -18,13 +18,23 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 # Note buildroot sets BUILD_SHARED_LIBS
 option(BUILD_SHARED "Whether or not to build the shared object" ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
+option(BUILD_DEPENDENCIES "Wether or not to build dependencies" ON)
 
 # Target environment
-set(ATX_UPDATE_ENV "EMU" CACHE STRING "UBOOT or EMU environment support")
+set(ATX_UPDATE_ENV "UBOOT" CACHE STRING "UBOOT or EMU environment support")
 
 # Dependencies
-if(${ATX_UPDATE_ENV} STREQUAL "UBOOT")
+include(cmake/import_functions.cmake)
+if(BUILD_DEPENDENCIES)
+  include(cmake/mongoose.cmake)
   include(cmake/libubootenv.cmake)
+  import_library_shared(mongoose mongoose-shared FALSE)
+  import_library_static(ubootenv ubootenv-static FALSE)
+else()
+  find_library(MONGOOSE_LIBRARY_PATH mongoose)
+  find_library(UBOOTENV_LIBRARY_PATH ubootenv)
+  import_library_shared(mongoose mongoose-shared ${MONGOOSE_LIBRARY_PATH})
+  import_library_static(ubootenv ubootenv-static ${UBOOTENV_LIBRARY_PATH})
 endif()
 
 # Test?
