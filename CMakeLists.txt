@@ -54,6 +54,7 @@ if(ENABLE_TESTING)
   add_subdirectory(test/_mocks/mongoose)
   add_subdirectory(test/env)
   add_subdirectory(test/http)
+  add_subdirectory(test/route_env)
 endif()
 
 # Modules

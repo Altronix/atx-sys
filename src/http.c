@@ -23,9 +23,8 @@
 // Hash map of URL's to routes
 MAP_INIT_W_FREE(routes, route_context);
 
-/*
 const char*
-http_error_message(E_LINQ_ERROR e)
+http_error_message(int e)
 {
     static const char* ok = "ok";
     static const char* server_error = "server error";
@@ -50,25 +49,21 @@ http_error_message(E_LINQ_ERROR e)
 }
 
 uint32_t
-http_error_code(E_LINQ_ERROR e)
+http_error_code(int e)
 {
+    int ret = 0;
     switch (e) {
-        case LINQ_ERROR_OK: return 200;
-        case LINQ_ERROR_BAD_ARGS:
-        case LINQ_ERROR_PROTOCOL:
-        case LINQ_ERROR_400: return 400;
-        case LINQ_ERROR_403: return 403;
-        case LINQ_ERROR_DEVICE_NOT_FOUND:
-        case LINQ_ERROR_404: return 404;
-        case LINQ_ERROR_SHUTTING_DOWN:
-        case LINQ_ERROR_IO:
-        case LINQ_ERROR_OOM:
-        case LINQ_ERROR_500: return 500;
-        case LINQ_ERROR_TIMEOUT:
-        case LINQ_ERROR_504: return 504;
+        case -1: ret = 400; break;
+        case 0: ret = 200; break;
+        case 200:
+        case 400:
+        case 403:
+        case 404:
+        case 500:
+        case 504: ret = e; break;
     }
+    return ret;
 }
-*/
 
 static inline HTTP_METHOD
 get_method(struct http_message* m)
@@ -181,8 +176,8 @@ process_route(
     struct mg_connection* c,
     struct http_message* m)
 {
-    (*r)->curr_connection = c;
-    (*r)->curr_message = m;
+    (*r)->connection = c;
+    (*r)->message = m;
     (*r)->cb(*r, get_method(m), m->body.len, m->body.p);
 }
 
@@ -305,7 +300,7 @@ http_parse_query_str(
     const char** result,
     uint32_t* l)
 {
-    struct mg_str* q = &c->curr_message->query_string;
+    struct mg_str* q = &c->message->query_string;
     if (q) {
         struct mg_str needle = { .p = want, .len = strlen(want) };
         const char *end, *spot = mg_strstr(*q, needle);

@@ -27,8 +27,8 @@ typedef struct route_context
 {
     route_cb cb;
     void* context;
-    struct mg_connection* curr_connection;
-    struct http_message* curr_message;
+    struct mg_connection* connection;
+    struct http_message* message;
     struct route_context* self;
 } route_context;
 MAP_INIT_H(routes, route_context);

@@ -8,6 +8,7 @@
 
 // clang-format off
 const char *emu_env = 
+ "{"
  "\"active\":\"a\","
  "\"boot_img\":\"bootz 0x22000000 - 0x21000000;\","
  "\"bootcmd\":\"run load_env; run load_arg; run read_dtb; run read_img; run boot_img;\","
@@ -28,7 +29,8 @@ const char *emu_env =
  "\"nfs_path\":\"/home/thomas/Git/altronix/gateway/buildroot-at91/output/images/rootfs\","
  "\"read_dtb\":\"nand read 0x21000000 $dtb 0x80000;\","
  "\"read_img\":\"nand read 0x22000000 $img 0x600000;\","
- "\"target_ip\":\"192.168.0.66\"";
+ "\"target_ip\":\"192.168.0.66\""
+ "}";
 // clang-format on
 
 int

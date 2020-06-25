@@ -32,7 +32,7 @@ test_http_hello_route(
     assert_int_equal(l, 0);
     assert_null(body);
     *((bool*)ctx->context) = true;
-    http_printf_json(ctx->curr_connection, 200, "{\"hello\":\"world\"}");
+    http_printf_json(ctx->connection, 200, "{\"hello\":\"world\"}");
 }
 
 static void
@@ -95,7 +95,7 @@ test_http_query_route(
     assert_non_null(query);
     assert_int_equal(len, 1);
     assert_memory_equal(query, "2", 1);
-    http_printf_json(ctx->curr_connection, 200, "{\"hello\":\"world\"}");
+    http_printf_json(ctx->connection, 200, "{\"hello\":\"world\"}");
 }
 
 static void
@@ -150,7 +150,7 @@ test_http_invalid_query_route(
     http_parse_query_str(ctx, "alsoinvalid", &query, &len);
     assert_null(query);
     assert_int_equal(len, 0);
-    http_printf_json(ctx->curr_connection, 200, "{\"hello\":\"world\"}");
+    http_printf_json(ctx->connection, 200, "{\"hello\":\"world\"}");
 }
 
 static void
@@ -198,4 +198,3 @@ main(int argc, char* argv[])
     err = cmocka_run_group_tests(tests, NULL, NULL);
     return err;
 }
-
