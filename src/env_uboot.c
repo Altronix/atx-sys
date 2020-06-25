@@ -7,7 +7,7 @@
 #include "log.h"
 
 int
-env_init(env_s* env)
+env_init(env_s* env, const char* path)
 {
     memset(env, 0, sizeof(env_s));
 
@@ -19,11 +19,11 @@ env_init(env_s* env)
     }
 
     // Read uboot env config from the system
-    ret = libuboot_read_config(env->ctx, ATX_UPDATE_ENV_CONFIG_FILE);
+    ret = libuboot_read_config(env->ctx, path);
     if (ret < 0) {
         libuboot_exit(env->ctx);
         log_error("libuboot failed to read config! [%d]", ret);
-        log_error("(file: [%s])", ATX_UPDATE_ENV_CONFIG_FILE);
+        log_error("(file: [%s])", path);
         goto ERR;
     }
 

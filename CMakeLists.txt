@@ -55,3 +55,4 @@ endif()
 add_subdirectory(src)
 
 # Apps
+add_subdirectory(app)

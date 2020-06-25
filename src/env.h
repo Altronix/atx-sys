@@ -15,7 +15,7 @@ typedef struct env_s
     env_ctx* ctx;
 } env_s;
 
-int env_init(env_s* env);
+int env_init(env_s* env, const char* path);
 void env_deinit(env_s* env);
 int env_read(env_s* env, char* buff, uint32_t* b);
 const char* env_read_val(env_s* env, const char* key);
