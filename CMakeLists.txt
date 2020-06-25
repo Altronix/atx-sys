@@ -48,6 +48,7 @@ if(ENABLE_TESTING)
   add_subdirectory(test/_mocks/ubootenv)
   add_subdirectory(test/_mocks/mongoose)
   add_subdirectory(test/env)
+  add_subdirectory(test/http)
 endif()
 
 # Modules
