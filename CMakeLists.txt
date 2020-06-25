@@ -24,6 +24,7 @@ option(BUILD_DEPENDENCIES "Wether or not to build dependencies" ON)
 set(ATX_UPDATE_ENV "UBOOT" CACHE STRING "UBOOT or EMU environment support")
 
 # Dependencies
+FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)
 include(cmake/import_functions.cmake)
 if(BUILD_DEPENDENCIES)
   include(cmake/mongoose.cmake)
