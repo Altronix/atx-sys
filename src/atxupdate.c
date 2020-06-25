@@ -35,3 +35,9 @@ atxupdate_destroy(atxupdate_s** update_p)
     memset(u, 0, sizeof(atxupdate_s));
     free(u);
 }
+
+void
+atxupdate_poll(atxupdate_s* u, uint32_t ms)
+{
+    http_poll(&u->http, ms);
+}

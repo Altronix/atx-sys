@@ -2,17 +2,27 @@
 
 #include "stdarg.h"
 #include "stdbool.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
-const char* usage = "Usage: atx-update [-pchd?]\n"
-                    "-p  HTTP port\n"
-                    "-c  Bootloader Environment (ie /etc/fw_env.config)\n"
-                    "-h  Print this help menu\n"
-                    "-d  Detatch in daemon mode\n"
-                    "-?  Print this help menu\n";
+static volatile int running = 1;
+
+void
+ctrlc(int dummy)
+{
+    running = 0;
+}
+
+const char* usage =
+    "Usage: atx-update [-pchd]\n"
+    "  -p  HTTP port (default: 8080)\n"
+    "  -c  Bootloader Environment (default: /etc/fw_env.config)\n"
+    "  -d  Detatch in daemon mode\n"
+    "  -h  Print this help menu\n";
 
 static void
 args_parse(atxupdate_config_s* config, int argc, char* argv[])
@@ -39,7 +49,13 @@ int
 main(int argc, char* argv[])
 {
     atxupdate_config_s config;
-
     args_parse(&config, argc, argv);
+    signal(SIGINT, ctrlc);
+
+    atxupdate_s* atxupdate = atxupdate_create(&config);
+
+    while (running) atxupdate_poll(atxupdate, 50);
+
+    atxupdate_destroy(&atxupdate);
     return 0;
 }
