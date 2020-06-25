@@ -18,7 +18,7 @@ typedef struct env_s
 int env_init(env_s* env);
 void env_close(env_s* env);
 int env_read(env_s* env, char* buff, uint32_t* b);
-int env_read_var(env_s* env, const char* var, uint32_t l);
+const char* env_read_val(env_s* env, const char* key);
 int env_write(env_s* env);
 
 #endif /* ENV_H */

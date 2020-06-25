@@ -72,10 +72,20 @@ env_read(env_s* env, char* buff, uint32_t* b)
     return *b < len ? 0 : -1;
 }
 
-int
-env_read_var(env_s* env, const char* var, uint32_t l)
+const char*
+env_read_val(env_s* env, const char* key)
 {
-    return -1;
+    const char *name, *ret = NULL;
+    void* iter = NULL;
+    while ((iter = libuboot_iterator(env->ctx, iter))) {
+        name = libuboot_getname(iter);
+        if (!strcmp(name, key)) {
+            ret = 0;
+            ret = libuboot_getvalue(iter);
+            break;
+        }
+    }
+    return ret;
 }
 
 int
