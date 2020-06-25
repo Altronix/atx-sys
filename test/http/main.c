@@ -10,25 +10,20 @@
 
 #include <cmocka.h>
 
-/*
 static void
 test_http_create(void** c_p)
 {
     ((void)c_p);
     mongoose_spy_init();
-    sqlite_spy_init();
-    linq_network_s* l = linq_network_create(NULL, NULL);
     http_s http;
-    http_init(&http, l);
+    http_init(&http, NULL);
     http_deinit(&http);
-    linq_network_destroy(&l);
     mongoose_spy_deinit();
-    sqlite_spy_deinit();
 }
 
 static void
 test_http_hello_route(
-    http_route_context* ctx,
+    route_context* ctx,
     HTTP_METHOD meth,
     uint32_t l,
     const char* body)
@@ -44,42 +39,33 @@ static void
 test_http_simple_get(void** context_p)
 {
     ((void)context_p);
-    database_s db;
     mongoose_spy_init();
-    sqlite_spy_init();
     bool pass = false;
 
     // Init http
-    linq_network_s* l = linq_network_create(NULL, NULL);
     http_s http;
-    http_init(&http, l);
+    http_init(&http, NULL);
     http_listen(&http, "80");
     http_use(&http, "/hello", test_http_hello_route, &pass);
 
-    // Mock sqlite database response
-    sqlite_spy_step_return_push(SQLITE_ROW); // user exists
-    sqlite_spy_column_int_return_push(1);    // user exists
-
     // Generate some events
-    mongoose_spy_event_request_push(UNSAFE_TOKEN, "GET", "/hello", NULL);
+    mongoose_spy_event_request_push("", "GET", "/hello", NULL);
     while (http_poll(&http, 0)) {};
 
     mongoose_parser_context* response = mongoose_spy_response_pop();
     assert_non_null(response);
     assert_int_equal(response->content_length, 17);
     assert_memory_equal(response->body, "{\"hello\":\"world\"}", 17);
-    mock_mongoose_response_destroy(&response);
+    mongoose_mock_response_destroy(&response);
 
     assert_true(pass);
     http_deinit(&http);
     mongoose_spy_deinit();
-    sqlite_spy_deinit();
-    linq_network_destroy(&l);
 }
 
 static void
 test_http_query_route(
-    http_route_context* ctx,
+    route_context* ctx,
     HTTP_METHOD meth,
     uint32_t l,
     const char* body)
@@ -116,43 +102,34 @@ static void
 test_http_simple_query(void** context_p)
 {
     ((void)context_p);
-    database_s db;
     mongoose_spy_init();
-    sqlite_spy_init();
     bool pass = false;
 
     // Init http
-    linq_network_s* l = linq_network_create(NULL, NULL);
     http_s http;
-    http_init(&http, l);
+    http_init(&http, NULL);
     http_listen(&http, "80");
     http_use(&http, "/hello", test_http_query_route, &pass);
 
-    // Mock sqlite database response
-    sqlite_spy_step_return_push(SQLITE_ROW); // user exists
-    sqlite_spy_column_int_return_push(1);    // user exists
-
     // Generate some events
     mongoose_spy_event_request_push(
-        UNSAFE_TOKEN, "GET", "/hello?a=1&param=echo&start=22&b=2", NULL);
+        "", "GET", "/hello?a=1&param=echo&start=22&b=2", NULL);
     while (http_poll(&http, 0)) {};
 
     mongoose_parser_context* response = mongoose_spy_response_pop();
     assert_non_null(response);
     assert_int_equal(response->content_length, 17);
     assert_memory_equal(response->body, "{\"hello\":\"world\"}", 17);
-    mock_mongoose_response_destroy(&response);
+    mongoose_mock_response_destroy(&response);
 
     assert_true(pass);
     http_deinit(&http);
     mongoose_spy_deinit();
-    sqlite_spy_deinit();
-    linq_network_destroy(&l);
 }
 
 static void
 test_http_invalid_query_route(
-    http_route_context* ctx,
+    route_context* ctx,
     HTTP_METHOD meth,
     uint32_t l,
     const char* body)
@@ -180,40 +157,30 @@ static void
 test_http_invalid_query(void** context_p)
 {
     ((void)context_p);
-    database_s db;
     mongoose_spy_init();
-    sqlite_spy_init();
     int pass = 0;
 
     // Init http
-    linq_network_s* l = linq_network_create(NULL, NULL);
     http_s http;
-    http_init(&http, l);
+    http_init(&http, NULL);
     http_listen(&http, "80");
     http_use(&http, "/hello", test_http_invalid_query_route, &pass);
 
-    // Mock sqlite database response
-    sqlite_spy_step_return_push(SQLITE_ROW); // user exists
-    sqlite_spy_column_int_return_push(1);    // user exists
-
     // Generate some events
     mongoose_spy_event_request_push(
-        UNSAFE_TOKEN, "GET", "/hello?invalid&alsoinvalid", NULL);
+        "", "GET", "/hello?invalid&alsoinvalid", NULL);
     while (http_poll(&http, 0)) {};
 
     mongoose_parser_context* response = mongoose_spy_response_pop();
     assert_non_null(response);
     assert_int_equal(response->content_length, 17);
     assert_memory_equal(response->body, "{\"hello\":\"world\"}", 17);
-    mock_mongoose_response_destroy(&response);
+    mongoose_mock_response_destroy(&response);
 
     assert_int_equal(pass, 1);
     http_deinit(&http);
     mongoose_spy_deinit();
-    sqlite_spy_deinit();
-    linq_network_destroy(&l);
 }
-*/
 
 int
 main(int argc, char* argv[])
@@ -222,10 +189,10 @@ main(int argc, char* argv[])
     ((void)argv);
     int err;
     const struct CMUnitTest tests[] = {
-        // cmocka_unit_test(test_http_create),
-        // cmocka_unit_test(test_http_simple_get),
-        // cmocka_unit_test(test_http_simple_query),
-        // cmocka_unit_test(test_http_invalid_query)
+        cmocka_unit_test(test_http_create),
+        cmocka_unit_test(test_http_simple_get),
+        cmocka_unit_test(test_http_simple_query),
+        cmocka_unit_test(test_http_invalid_query)
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);
