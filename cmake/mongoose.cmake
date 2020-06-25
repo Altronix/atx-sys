@@ -13,3 +13,10 @@ ExternalProject_Add(mongoose-project
 		COMMAND 
 		  ${CMAKE_COMMAND} -E copy ${MONGOOSE_SOURCE_DIR}/mongoose.h ${CMAKE_INSTALL_PREFIX}/include/mongoose.h
   INSTALL_COMMAND ${CMAKE_C_COMPILER} -shared -o ${CMAKE_INSTALL_PREFIX}/lib/libmongoose.so mongoose.o)
+
+function(append_mongoose_compiler_flags dst)
+  list(APPEND definitions "-DMG_ENABLE_HTTP_STREAMING_MULTIPART")
+  list(APPEND definitions "-DMG_ENABLE_WEBSOCKET")
+  list(APPEND definitions "-DMG_ENABLE_CALLBACK_USERDATA")
+  set(${dst} ${definitions} PARENT_SCOPE)
+endfunction()
