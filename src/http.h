@@ -9,6 +9,7 @@
 #include "env.h"
 
 #include "containers.h"
+#define ROUTE_CB_ARGS route_context *, HTTP_METHOD meth, uint32_t, const char *
 
 // Type of request
 typedef enum

@@ -1,4 +1,5 @@
 #include "http.h"
+#include "http_route_env.h"
 #include "log.h"
 
 #define HTTP_FORMAT_HEADERS                                                    \
@@ -251,10 +252,13 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
 void
 http_init(http_s* http, env_s* env)
 {
+#define ADD_ROUTE(http, path, fn, ctx) http_use(http, path, fn, ctx)
     memset(http, 0, sizeof(http_s));
     http->env = env;
     mg_mgr_init(&http->connections, http);
     http->routes = routes_map_create();
+    ADD_ROUTE(http, "/api/v1/env", route_env, http);
+#undef ADD_ROUTE
 }
 
 void

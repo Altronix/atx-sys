@@ -1,5 +1,5 @@
-set(SOURCES http.c sys.c)
-set(HEADERS http.h sys.h env.h klist.h khash.h containers.h)
+set(SOURCES http.c http_route_env.c sys.c)
+set(HEADERS http.h http_route_env.h sys.h env.h klist.h khash.h containers.h)
 
 set(LIBS mongoose-shared m z)
 set(LIBS_STATIC ${LIBS})
