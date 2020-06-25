@@ -22,6 +22,12 @@ option(BUILD_DEPENDENCIES "Wether or not to build dependencies" ON)
 
 # Target environment
 set(ATX_UPDATE_ENV "UBOOT" CACHE STRING "UBOOT or EMU environment support")
+if(${ATX_UPDATE_ENV} STREQUAL "UBOOT")
+  set(ATX_UPDATE_ENV_INT 0)
+elseif(${ATX_UPDATE_ENV} STREQUAL "EMU")
+  set(ATX_UPDATE_ENV_INT 1)
+else()
+endif()
 
 # Dependencies
 FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)

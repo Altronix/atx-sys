@@ -30,11 +30,13 @@ target_link_libraries(atx-update-test ${LIBS})
 target_include_directories(atx-update-test PUBLIC ./)
 target_include_directories(atx-update-test PUBLIC ../include)
 target_compile_definitions(atx-update-test PUBLIC ${definitions})
+target_compile_definitions(atx-update-test PUBLIC "-DATX_UPDATE_ENV=${ATX_UPDATE_ENV_INT}")
 
 add_library(atx-update-static STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(atx-update-static ${LIBS})
 target_include_directories(atx-update-static PUBLIC ../include)
 target_compile_definitions(atx-update-static PUBLIC ${definitions})
+target_compile_definitions(atx-update-static PUBLIC "-DATX_UPDATE_ENV=${ATX_UPDATE_ENV_INT}")
 set_target_properties(atx-update-static PROPERTIES
   PUBLIC_HEADER "${HEADERS_PUBLIC}"
   OUTPUT_NAME "atx-update")

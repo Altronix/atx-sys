@@ -10,4 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// These match CMakeLists.txt ATX_UPDATE_ENV_INT variable
+#define UBOOT 0
+#define EMU 1
+
 #endif /* PRIVATE_H */
