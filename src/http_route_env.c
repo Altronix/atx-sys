@@ -1,8 +1,8 @@
 #include "http_route_env.h"
 #include "env.h"
 
-void
-route_env(route_context* ctx, HTTP_METHOD meth, uint32_t l, const char* b)
+static void
+get(route_context* ctx)
 {
     uint32_t keyl;
     const char *keyp = NULL, *val = NULL;
@@ -23,5 +23,34 @@ route_env(route_context* ctx, HTTP_METHOD meth, uint32_t l, const char* b)
         char buffer[sz];
         env_read(http->env, buffer, &sz);
         http_printf_json(ctx->connection, 200, "%s", buffer);
+    }
+}
+
+static void
+post(route_context* ctx)
+{
+    // TODO
+}
+
+static void
+put(route_context* ctx)
+{
+    // TODO
+}
+
+static void
+del(route_context* ctx)
+{
+    // TODO
+}
+
+void
+route_env(route_context* ctx, HTTP_METHOD meth, uint32_t l, const char* b)
+{
+    switch (meth) {
+        case HTTP_METHOD_GET: get(ctx); break;
+        case HTTP_METHOD_PUT: put(ctx); break;
+        case HTTP_METHOD_POST: post(ctx); break;
+        case HTTP_METHOD_DELETE: del(ctx); break;
     }
 }
