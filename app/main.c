@@ -25,24 +25,30 @@ const char* usage =
     "  -h  Print this help menu\n";
 
 static void
+print_usage_and_exit(int code)
+{
+    fprintf(stdout, "%s", usage);
+    exit(code);
+}
+
+static void
 args_parse(atxupdate_config_s* config, int argc, char* argv[])
 {
-    int opt, arglen;
+    int opt, count = 0;
     memset(config, 0, sizeof(atxupdate_config_s));
     optind = 0;
     while ((opt = getopt(argc, argv, "pchd?")) != -1) {
+        count++;
         switch (opt) {
             case 'p': config->port = argv[optind]; break;
             case 'c': config->env = argv[optind]; break;
             case 'd': config->daemon = true; break;
             case '?':
-            case 'h': fprintf(stdout, "%s", usage); break;
-            default:
-                fprintf(stderr, "Usage: %s [-pch?]", argv[0]);
-                exit(-1);
-                break;
+            case 'h': print_usage_and_exit(0); break;
+            default: print_usage_and_exit(-1); break;
         }
     }
+    if (!count) print_usage_and_exit(0);
 }
 
 int
