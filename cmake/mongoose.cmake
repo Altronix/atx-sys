@@ -4,6 +4,7 @@ set(MONGOOSE_TEST_FILE ${MONGOOSE_SOURCE_DIR}/CMakeLists.txt)
 add_library(mongoose-shared SHARED 
   ${MONGOOSE_SOURCE_DIR}/mongoose.c 
   ${MONGOOSE_SOURCE_DIR}/mongoose.h)
+target_include_directories(mongoose-shared PUBLIC ${MONGOOSE_SOURCE_DIR})
 install(TARGETS mongoose-shared
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
