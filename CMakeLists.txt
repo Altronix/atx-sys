@@ -40,7 +40,9 @@ else()
   find_library(MONGOOSE_LIBRARY_PATH mongoose)
   find_library(UBOOTENV_LIBRARY_PATH ubootenv)
   import_library_shared(mongoose mongoose-shared ${MONGOOSE_LIBRARY_PATH})
-  import_library_static(ubootenv ubootenv-static ${UBOOTENV_LIBRARY_PATH})
+  import_library_shared(ubootenv ubootenv-static ${UBOOTENV_LIBRARY_PATH})
+  message("mongoose: ${MONGOOSE_LIBRARY_PATH}")
+  message("ubootenv: ${UBOOTENV_LIBRARY_PATH}")
 endif()
 
 # Test?

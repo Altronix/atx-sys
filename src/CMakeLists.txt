@@ -14,7 +14,9 @@ set(HEADERS
 set(HEADERS_PUBLIC ../include/altronix/atxupdate.h)
 
 set(LIBS mongoose-shared m z)
-append_mongoose_compiler_flags(definitions)
+list(APPEND definitions "-DMG_ENABLE_HTTP_STREAMING_MULTIPART")
+list(APPEND definitions "-DMG_ENABLE_WEBSOCKET")
+list(APPEND definitions "-DMG_ENABLE_CALLBACK_USERDATA")
 
 if(${ATX_UPDATE_ENV} STREQUAL "EMU")
   list(APPEND SOURCES env_emu.c)
