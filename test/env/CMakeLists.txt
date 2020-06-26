@@ -1,7 +1,7 @@
 add_executable(test-env main.c)
 target_link_libraries(test-env 
   atx-update-test 
-  ubootenv-static
+  ubootenv-shared
   ubootenv-mock
   cmocka)
 ubootenv_mock_linker_flags(ubootenv_link_flags)

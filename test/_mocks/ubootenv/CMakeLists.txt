@@ -2,7 +2,7 @@
 # Lib of mock functions for test
 # --------------------------------------------------------------------------
 add_library(ubootenv-mock libubootenv.c libubootenv.h)
-target_link_libraries(ubootenv-mock ubootenv-static)
+target_link_libraries(ubootenv-mock ubootenv-shared)
 target_include_directories(ubootenv-mock PUBLIC .)
 
 function(ubootenv_mock_linker_flags dst)
