@@ -21,7 +21,8 @@ test_read(void** context_p)
     char* expect = "{"
                    "\"bootcmd\":\"console=ttyS0,115200 earlyprintk\","
                    "\"dtb_addr\":\"0xb0000\","
-                   "\"img_addr\":\"0xd0000\""
+                   "\"img_addr\":\"0xd0000\","
+                   "\"foo\":\"mtdparts='abc'\""
                    "}";
     uint32_t sz = 4096, expect_sz = strlen(expect);
     char buffer[sz];
@@ -30,6 +31,7 @@ test_read(void** context_p)
     libubootenv_spy_push_iter("bootcmd", "console=ttyS0,115200 earlyprintk");
     libubootenv_spy_push_iter("dtb_addr", "0xb0000");
     libubootenv_spy_push_iter("img_addr", "0xd0000");
+    libubootenv_spy_push_iter("foo", "mtdparts=\"abc\"");
 
     env_read(&env, buffer, &sz);
     assert_int_equal(sz, expect_sz);

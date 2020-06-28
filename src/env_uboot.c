@@ -55,6 +55,7 @@ env_read(env_s* env, char* buff, uint32_t* b)
     void* iter = NULL;
     const char *name, *value;
     uint32_t len = *b;
+    char temp[128];
     *b = 1;
     if (len) *buff = '{';
 
@@ -62,7 +63,11 @@ env_read(env_s* env, char* buff, uint32_t* b)
     while (iter) {
         name = libuboot_getname(iter);
         value = libuboot_getvalue(iter);
-        *b += snprintf(&buff[*b], len - *b, "\"%s\":\"%s\"", name, value);
+        snprintf(temp, sizeof(temp), "%s", value);
+        for (int i = 0, templen = strlen(temp); i < templen; i++) {
+            if (temp[i] == '"') temp[i] = '\'';
+        }
+        *b += snprintf(&buff[*b], len - *b, "\"%s\":\"%s\"", name, temp);
         if ((iter = libuboot_iterator(env->ctx, iter))) {
             if (*b < len) buff[(*b)++] = ',';
         }

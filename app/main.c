@@ -55,6 +55,7 @@ int
 main(int argc, char* argv[])
 {
     atxupdate_config_s config;
+    // TODO load defaults
     args_parse(&config, argc, argv);
     signal(SIGINT, ctrlc);
 
