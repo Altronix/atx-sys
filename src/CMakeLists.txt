@@ -17,6 +17,7 @@ set(LIBS mongoose-shared m z)
 list(APPEND definitions "-DMG_ENABLE_HTTP_STREAMING_MULTIPART")
 list(APPEND definitions "-DMG_ENABLE_WEBSOCKET")
 list(APPEND definitions "-DMG_ENABLE_CALLBACK_USERDATA")
+append_log_level_compiler_flags(definitions)
 
 if(${ATX_UPDATE_ENV} STREQUAL "EMU")
   list(APPEND SOURCES env_emu.c)

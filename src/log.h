@@ -15,57 +15,57 @@ extern "C"
 
     typedef enum
     {
-        LINQ_TRACE,
-        LINQ_DEBUG,
-        LINQ_INFO,
-        LINQ_WARN,
-        LINQ_ERROR,
-        LINQ_FATAL,
-        LINQ_NONE
+        TRACE,
+        DEBUG,
+        INFO,
+        WARN,
+        ERROR,
+        FATAL,
+        NONE
     } E_LOG_LEVEL;
 
-#if LINQ_LOG_LEVEL == 6
-#define log_trace(...) log_log(LINQ_TRACE, __FILE__, __LINE__, __VA_ARGS__)
-#define log_debug(...) log_log(LINQ_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define log_info(...) log_log(LINQ_INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define log_warn(...) log_log(LINQ_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_log(LINQ_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log(LINQ_FATAL, __FILE__, __LINE__, __VA_ARGS__)
-#elif LINQ_LOG_LEVEL == 5
+#if LOG_LEVEL == 6
+#define log_trace(...) log_log(TRACE, __FILE__, __LINE__, __VA_ARGS__)
+#define log_debug(...) log_log(DEBUG, __FILE__, __LINE__, __VA_ARGS__)
+#define log_info(...) log_log(INFO, __FILE__, __LINE__, __VA_ARGS__)
+#define log_warn(...) log_log(WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define log_error(...) log_log(ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define log_fatal(...) log_log(FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#elif LOG_LEVEL == 5
 #define log_trace(...)
-#define log_debug(...) log_log(LINQ_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define log_info(...) log_log(LINQ_INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define log_warn(...) log_log(LINQ_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_log(LINQ_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log(LINQ_FATAL, __FILE__, __LINE__, __VA_ARGS__)
-#elif LINQ_LOG_LEVEL == 4
+#define log_debug(...) log_log(DEBUG, __FILE__, __LINE__, __VA_ARGS__)
+#define log_info(...) log_log(INFO, __FILE__, __LINE__, __VA_ARGS__)
+#define log_warn(...) log_log(WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define log_error(...) log_log(ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define log_fatal(...) log_log(FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#elif LOG_LEVEL == 4
 #define log_trace(...)
 #define log_debug(...)
-#define log_info(...) log_log(LINQ_INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define log_warn(...) log_log(LINQ_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_log(LINQ_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log(LINQ_FATAL, __FILE__, __LINE__, __VA_ARGS__)
-#elif LINQ_LOG_LEVEL == 3
+#define log_info(...) log_log(INFO, __FILE__, __LINE__, __VA_ARGS__)
+#define log_warn(...) log_log(WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define log_error(...) log_log(ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define log_fatal(...) log_log(FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#elif LOG_LEVEL == 3
 #define log_trace(...)
 #define log_debug(...)
 #define log_info(...)
-#define log_warn(...) log_log(LINQ_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_log(LINQ_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log(LINQ_FATAL, __FILE__, __LINE__, __VA_ARGS__)
-#elif LINQ_LOG_LEVEL == 2
+#define log_warn(...) log_log(WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define log_error(...) log_log(ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define log_fatal(...) log_log(FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#elif LOG_LEVEL == 2
 #define log_trace(...)
 #define log_debug(...)
 #define log_info(...)
 #define log_warn(...)
-#define log_error(...) log_log(LINQ_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log(LINQ_FATAL, __FILE__, __LINE__, __VA_ARGS__)
-#elif LINQ_LOG_LEVEL == 1
+#define log_error(...) log_log(ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define log_fatal(...) log_log(FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#elif LOG_LEVEL == 1
 #define log_trace(...)
 #define log_debug(...)
 #define log_info(...)
 #define log_warn(...)
 #define log_error(...)
-#define log_fatal(...) log_log(LINQ_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#define log_fatal(...) log_log(FATAL, __FILE__, __LINE__, __VA_ARGS__)
 #else
 #define log_trace(...)
 #define log_debug(...)

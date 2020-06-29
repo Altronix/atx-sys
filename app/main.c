@@ -35,7 +35,6 @@ static void
 args_parse(atxupdate_config_s* config, int argc, char* argv[])
 {
     int opt, count = 0;
-    memset(config, 0, sizeof(atxupdate_config_s));
     optind = 0;
     while ((opt = getopt(argc, argv, "pchd?")) != -1) {
         count++;
@@ -48,14 +47,15 @@ args_parse(atxupdate_config_s* config, int argc, char* argv[])
             default: print_usage_and_exit(-1); break;
         }
     }
-    if (!count) print_usage_and_exit(0);
 }
 
 int
 main(int argc, char* argv[])
 {
     atxupdate_config_s config;
-    // TODO load defaults
+    memset(&config, 0, sizeof(atxupdate_config_s));
+    config.env = "/etc/fw_env.config";
+    config.port = "8080";
     args_parse(&config, argc, argv);
     signal(SIGINT, ctrlc);
 
