@@ -79,6 +79,7 @@ if(ENABLE_TESTING)
   add_subdirectory(test/http)
   add_subdirectory(test/route_env)
 endif()
+set(CMAKE_BUILD_TYPE Debug)
 
 # Modules
 add_subdirectory(src)

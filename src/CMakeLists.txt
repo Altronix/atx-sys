@@ -11,7 +11,7 @@ set(HEADERS
   klist.h
   khash.h
   containers.h)
-set(HEADERS_PUBLIC ../include/altronix/atxupdate.h)
+set(HEADERS_PUBLIC ../include/altronix/atxupdate.h log.h)
 
 set(LIBS mongoose-shared m z)
 list(APPEND definitions "-DMG_ENABLE_HTTP_STREAMING_MULTIPART")
