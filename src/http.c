@@ -294,6 +294,13 @@ http_use(http_s* http, const char* path, route_cb cb, void* context)
 }
 
 void
+http_serve(http_s* http, const char* path)
+{
+    log_info("(HTTP) Serving... [%s]", path);
+    http->serve_opts.document_root = path;
+}
+
+void
 http_parse_query_str(
     route_context* c,
     const char* want,

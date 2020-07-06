@@ -54,6 +54,7 @@ atxupdate_create(atxupdate_config_s* c)
         }
         env_init(&u->env, env);
         http_init(&u->http, &u->env);
+        if (c->www) http_serve(&u->http, c->www);
         http_listen(&u->http, port);
     }
     return u;
