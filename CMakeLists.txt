@@ -41,6 +41,7 @@ option(BUILD_SHARED "Whether or not to build the shared object" ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
 option(BUILD_DEPENDENCIES "Wether or not to build dependencies" ON)
 option(BUILD_EMU "Wether or not to build in emulator mode" OFF)
+set(BUILDROOT_DIR "" CACHE STRING "Must set when building outside of buildroot")
 
 # Dependencies
 FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)
@@ -50,12 +51,28 @@ if(BUILD_DEPENDENCIES)
   include(cmake/ubootenv.cmake)
   import_library_static(ubootenv ubootenv-shared FALSE)
 else()
-  find_library(MONGOOSE_LIBRARY_PATH mongoose)
-  find_library(UBOOTENV_LIBRARY_PATH ubootenv)
+  if(${BUILDROOT_DIR} STREQUAL "")
+    find_library(MONGOOSE_LIBRARY_PATH mongoose)
+    find_library(UBOOTENV_LIBRARY_PATH ubootenv)
+    find_library(SWUPDATE_LIBRARY_PATH swupdate NAMES libswupdate.a)
+  else()
+    find_library(MONGOOSE_LIBRARY_PATH mongoose 
+      NO_CMAKE_SYSTEM_PATH 
+      PATHS ${BUILDROOT_DIR}/output/staging/usr/lib)
+    find_library(UBOOTENV_LIBRARY_PATH ubootenv 
+      NO_CMAKE_SYSTEM_PATH 
+      PATHS ${BUILDROOT_DIR}/output/staging/usr/lib)
+    find_library(SWUPDATE_LIBRARY_PATH swupdate 
+      NAMES libswupdate.a 
+      NO_CMAKE_SYSTEM_PATH 
+      PATHS ${BUILDROOT_DIR}/output/staging/usr/lib)
+  endif()
   import_library_shared(mongoose mongoose-shared ${MONGOOSE_LIBRARY_PATH})
   import_library_shared(ubootenv ubootenv-shared ${UBOOTENV_LIBRARY_PATH})
+  import_library_static(swupdate swupdate-static ${SWUPDATE_LIBRARY_PATH})
   message("mongoose: ${MONGOOSE_LIBRARY_PATH}")
   message("ubootenv: ${UBOOTENV_LIBRARY_PATH}")
+  message("swupdate: ${SWUPDATE_LIBRARY_PATH}")
 endif()
 
 # Test?
