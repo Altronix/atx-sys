@@ -40,15 +40,7 @@ endfunction()
 option(BUILD_SHARED "Whether or not to build the shared object" ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
 option(BUILD_DEPENDENCIES "Wether or not to build dependencies" ON)
-
-# Target environment
-set(ATX_UPDATE_ENV "UBOOT" CACHE STRING "UBOOT or EMU environment support")
-if(${ATX_UPDATE_ENV} STREQUAL "UBOOT")
-  set(ATX_UPDATE_ENV_INT 0)
-elseif(${ATX_UPDATE_ENV} STREQUAL "EMU")
-  set(ATX_UPDATE_ENV_INT 1)
-else()
-endif()
+option(BUILD_EMU "Wether or not to build in emulator mode" OFF)
 
 # Dependencies
 FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)

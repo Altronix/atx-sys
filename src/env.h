@@ -3,10 +3,10 @@
 
 #include "private.h"
 
-#if ATX_UPDATE_ENV == UBOOT
+#if EMU == FALSE
 #include "libuboot.h"
 typedef struct uboot_ctx env_ctx;
-#elif ATX_UPDATE_ENV == EMU
+#else
 typedef void env_ctx;
 #endif
 
