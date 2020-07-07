@@ -56,6 +56,12 @@ else()
     find_library(UBOOTENV_LIBRARY_PATH ubootenv)
     find_library(SWUPDATE_LIBRARY_PATH swupdate NAMES libswupdate.a)
   else()
+    set(TRIPPLE "arm-buildroot-linux-gnueabihf")
+    set(CMAKE_SYSTEM_NAME Linux)
+    set(CMAKE_SYSTEM_PROCESSOR arm)
+    set(CMAKE_STAGING_PREFIX "${BUILDROOT_DIR}/output/staging")
+    set(CMAKE_C_COMPILER "${BUILDROOT_DIR}/output/host/bin/${TRIPPLE}-cc")
+    set(CMAKE_CXX_COMPILER "${BUILDROOT_DIR}/output/host/bin/${TRIPPLE}-c++")
     find_library(MONGOOSE_LIBRARY_PATH mongoose 
       NO_CMAKE_SYSTEM_PATH 
       PATHS ${BUILDROOT_DIR}/output/staging/usr/lib)

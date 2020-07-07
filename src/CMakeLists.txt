@@ -21,10 +21,13 @@ append_log_level_compiler_flags(definitions)
 
 if(${BUILD_EMU})
   list(APPEND SOURCES env_emu.c)
+  list(APPEND SOURCES updater_emu.c)
   list(APPEND definitions "-DEMU=TRUE")
 else()
   list(APPEND SOURCES env_uboot.c)
+  list(APPEND SOURCES updater_swupdate.c)
   list(APPEND LIBS ubootenv-shared)
+  list(APPEND LIBS swupdate-static)
   list(APPEND definitions "-DEMU=FALSE")
 endif()
 
