@@ -39,7 +39,7 @@ updater_write(updater_s* updater, void* data, uint32_t len)
     if (written != len) {
         if (!(errno == EAGAIN || errno == EWOULDBLOCK)) {
             log_error("(UPDATE) write io error [%s]", strerror(errno));
-            err = errno;
+            err = updater->status = UPDATER_STATUS_FAIL;
         } else {
             log_debug("(UPDATE) write io error [%s]", strerror(errno));
         }
@@ -64,4 +64,10 @@ bool
 updater_active(updater_s* updater)
 {
     return updater->ipc ? true : false;
+}
+
+enum UPDATER_STATUS
+updater_status(updater_s* updater)
+{
+    return updater->status;
 }

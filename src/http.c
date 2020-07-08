@@ -269,7 +269,7 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
                 "Ok",
                 mp->file_name,
                 http->updater.len);
-            mp->user_data = c->user_data = NULL;
+            mp->user_data = NULL;
             updater_free(&http->updater);
         } break;
         case MG_EV_HTTP_MULTIPART_REQUEST_END:

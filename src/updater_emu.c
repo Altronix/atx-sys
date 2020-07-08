@@ -25,3 +25,9 @@ updater_active(updater_s* updater)
 {
     return updater->ipc ? true : false;
 }
+
+enum UPDATER_STATUS
+updater_status(updater_s* updater)
+{
+    return updater->status;
+}
