@@ -243,32 +243,24 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
             struct mg_http_multipart_part* mp = p;
             http_s* http = user_data;
             if (!(http && updater_active(&http->updater))) break;
+            if (!(updater_status(&http->updater) == UPDATER_STATUS_OK)) break;
             e = updater_write(&http->updater, (void*)mp->data.p, mp->data.len);
-            if (e < 0) {
-                c->flags |= MG_F_SEND_AND_CLOSE;
-                c_printf_json(
-                    c,
-                    500,
-                    "{\"error\":\"%s\",\"received\":%d,\"from\":\"%s\"}",
-                    http_error_message(500),
-                    http->updater.len,
-                    mp->file_name);
-                mp->user_data = NULL;
-                updater_free(&http->updater);
-            }
         } break;
         case MG_EV_HTTP_PART_END: {
             log_trace("%06s %04s", "(HTTP)", "part end");
             struct mg_http_multipart_part* mp = p;
             http_s* http = user_data;
+            int code = updater_status(&http->updater) == UPDATER_STATUS_FAIL
+                           ? 500
+                           : 200;
             c->flags |= MG_F_SEND_AND_CLOSE;
             c_printf_json(
                 c,
-                200,
+                code,
                 "{\"error\":\"%s\",\"received\":%d,\"from\":\"%s\"}",
-                "Ok",
-                mp->file_name,
-                http->updater.len);
+                http_error_message(code),
+                http->updater.len,
+                mp->file_name);
             mp->user_data = NULL;
             updater_free(&http->updater);
         } break;
