@@ -1,6 +1,7 @@
 #include "http.h"
 #include "http_route_env.h"
 #include "log.h"
+#include "updater.h"
 
 #define HTTP_FORMAT_HEADERS                                                    \
     "HTTP/1.0 %d \r\n"                                                         \
@@ -32,6 +33,7 @@ http_error_message(int e)
     static const char* authorization = "authorization error";
     static const char* not_found = "not found";
     static const char* busy = "try again later";
+    static const char* server = "server error";
     int code = http_error_code(e);
     if (code == 200) {
         return ok;
@@ -41,6 +43,8 @@ http_error_message(int e)
         return authorization;
     } else if (code == 404) {
         return not_found;
+    } else if (code == 500) {
+        return server;
     } else if (code == 504) {
         return busy;
     } else {
@@ -226,15 +230,48 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
         case MG_EV_HTTP_MULTIPART_REQUEST:
             log_trace("%06s %04s", "(HTTP)", "multipart request");
             break;
-        case MG_EV_HTTP_PART_BEGIN:
+        case MG_EV_HTTP_PART_BEGIN: {
             log_trace("%06s %04s", "(HTTP)", "part begin");
-            break;
-        case MG_EV_HTTP_PART_DATA:
+            struct mg_http_multipart_part* mp = p;
+            http_s* http = user_data;
+            updater_init(&http->updater, mp->file_name, strlen(mp->file_name));
+            mp->user_data = http;
+        } break;
+        case MG_EV_HTTP_PART_DATA: {
             log_trace("%06s %04s", "(HTTP)", "part data");
-            break;
-        case MG_EV_HTTP_PART_END:
+            int e;
+            struct mg_http_multipart_part* mp = p;
+            http_s* http = user_data;
+            if (!(http && updater_active(&http->updater))) break;
+            e = updater_write(&http->updater, (void*)mp->data.p, mp->data.len);
+            if (e < 0) {
+                c->flags |= MG_F_SEND_AND_CLOSE;
+                c_printf_json(
+                    c,
+                    500,
+                    "{\"error\":\"%s\",\"received\":%d,\"from\":\"%s\"}",
+                    http_error_message(500),
+                    http->updater.len,
+                    mp->file_name);
+                mp->user_data = NULL;
+                updater_free(&http->updater);
+            }
+        } break;
+        case MG_EV_HTTP_PART_END: {
             log_trace("%06s %04s", "(HTTP)", "part end");
-            break;
+            struct mg_http_multipart_part* mp = p;
+            http_s* http = user_data;
+            c->flags |= MG_F_SEND_AND_CLOSE;
+            c_printf_json(
+                c,
+                200,
+                "{\"error\":\"%s\",\"received\":%d,\"from\":\"%s\"}",
+                "Ok",
+                mp->file_name,
+                http->updater.len);
+            mp->user_data = c->user_data = NULL;
+            updater_free(&http->updater);
+        } break;
         case MG_EV_HTTP_MULTIPART_REQUEST_END:
             log_trace("%06s %04s", "(HTTP)", "multipart request end");
             break;
@@ -259,6 +296,7 @@ http_init(http_s* http, env_s* env)
 void
 http_deinit(http_s* http)
 {
+    updater_free(&http->updater);
     mg_mgr_free(&http->connections);
     routes_map_destroy(&http->routes);
 }

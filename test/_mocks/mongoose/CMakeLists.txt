@@ -39,5 +39,5 @@ target_link_libraries(test-mongoose-mock
                       mongoose-mock
                       cmocka)
 add_test(NAME test-mongoose-mock COMMAND test-mongoose-mock)
-install(TARGETS test-mongoose-mock DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(TARGETS test-mongoose-mock DESTINATION bin)
 

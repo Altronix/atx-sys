@@ -13,7 +13,7 @@ set(HEADERS
   containers.h)
 set(HEADERS_PUBLIC ../include/altronix/atxupdate.h log.h)
 
-set(LIBS mongoose-shared m z)
+set(LIBS mongoose-shared ${CMAKE_THREAD_LIBS_INIT} m z)
 list(APPEND definitions "-DMG_ENABLE_HTTP_STREAMING_MULTIPART")
 list(APPEND definitions "-DMG_ENABLE_WEBSOCKET")
 list(APPEND definitions "-DMG_ENABLE_CALLBACK_USERDATA")

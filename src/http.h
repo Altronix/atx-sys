@@ -7,6 +7,7 @@
 #undef LIST_INIT /* leaky header :( */
 
 #include "env.h"
+#include "updater.h"
 
 #include "containers.h"
 #define ROUTE_CB_ARGS route_context *, HTTP_METHOD meth, uint32_t, const char *
@@ -39,6 +40,7 @@ typedef struct http_s
     struct mg_connection* https;
     struct mg_mgr connections;
     struct mg_serve_http_opts serve_opts;
+    updater_s updater;
     env_s* env;
     routes_map_s* routes;
 } http_s;

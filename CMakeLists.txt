@@ -5,6 +5,7 @@ find_package(Git)
 if(NOT Git_FOUND)
   message(FATAL_ERROR "Git not found! Git is required to install submodules")
 endif()
+find_package(Threads)
 
 # dependency install
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
@@ -39,7 +40,7 @@ endfunction()
 # Note buildroot sets BUILD_SHARED_LIBS
 option(BUILD_SHARED "Whether or not to build the shared object" ON)
 option(BUILD_STATIC "Whether or not to build the static archive" ON)
-option(BUILD_DEPENDENCIES "Wether or not to build dependencies" ON)
+option(BUILD_DEPENDENCIES "Wether or not to build dependencies" OFF)
 option(BUILD_EMU "Wether or not to build in emulator mode" OFF)
 set(BUILDROOT_DIR "" CACHE STRING "Must set when building outside of buildroot")
 
@@ -61,7 +62,6 @@ else()
     set(TRIPPLE "arm-buildroot-linux-gnueabihf")
     set(CMAKE_SYSTEM_NAME Linux)
     set(CMAKE_SYSTEM_PROCESSOR arm)
-    set(CMAKE_STAGING_PREFIX "${BUILDROOT_DIR}/output/staging")
     set(CMAKE_C_COMPILER "${BUILDROOT_DIR}/output/host/bin/${TRIPPLE}-cc")
     set(CMAKE_CXX_COMPILER "${BUILDROOT_DIR}/output/host/bin/${TRIPPLE}-c++")
     find_library(MONGOOSE_LIBRARY_PATH mongoose 
