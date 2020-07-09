@@ -4,6 +4,9 @@
 #include "log.h"
 #include "updater.h"
 
+#define mg_use(http, path, fn, ctx)                                            \
+    mg_register_http_endpoint(http->http, path, fn, ctx)
+
 #define HTTP_FORMAT_HEADERS                                                    \
     "HTTP/1.0 %d \r\n"                                                         \
     "Server: Altronix atx-update Embedded Web Server\r\n"                      \
@@ -269,11 +272,8 @@ http_listen(http_s* http, const char* port)
     log_info("(HTTP) Listening... [http://*:%s]", port);
     http->http = mg_bind(&http->connections, port, ev_handler, http);
     mg_set_protocol_http_websocket(http->http);
-    mg_register_http_endpoint(
-        http->http, "/api/v1/update", MG_CB(update_handler, http));
-#define ADD_ROUTE(http, path, fn, ctx) http_use(http, path, fn, ctx)
-    ADD_ROUTE(http, "/api/v1/env", route_env, http);
-#undef ADD_ROUTE
+    mg_use(http, "/api/v1/update", update_handler, http);
+    http_use(http, "/api/v1/env", route_env, http);
 }
 
 void
