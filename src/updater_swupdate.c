@@ -35,21 +35,18 @@ updater_init(updater_s* updater, const char* data, uint32_t len)
 int
 updater_write(updater_s* updater, void* data, uint32_t len)
 {
-    int err = 0, written = write(updater->ipc, data, len);
+    int written = write(updater->ipc, data, len);
     if (written != len) {
         if (!(errno == EAGAIN || errno == EWOULDBLOCK)) {
             log_error("(UPDATE) write io error [%s]", strerror(errno));
-            err = updater->status = UPDATER_STATUS_FAIL;
         } else {
             log_debug("(UPDATE) write io error [%s]", strerror(errno));
         }
         usleep(100);
         if (written < 0) written = 0;
-    } else {
-        log_debug("(UPDATE) write %d/%d bytes", written, len);
     }
     updater->len += written;
-    return err ? -1 : written;
+    return written;
 }
 
 void

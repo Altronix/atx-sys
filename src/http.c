@@ -239,12 +239,13 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
         } break;
         case MG_EV_HTTP_PART_DATA: {
             log_trace("%06s %04s", "(HTTP)", "part data");
-            int e;
+            int l;
             struct mg_http_multipart_part* mp = p;
             http_s* http = user_data;
             if (!(http && updater_active(&http->updater))) break;
             if (!(updater_status(&http->updater) == UPDATER_STATUS_OK)) break;
-            e = updater_write(&http->updater, (void*)mp->data.p, mp->data.len);
+            l = updater_write(&http->updater, (void*)mp->data.p, mp->data.len);
+            mp->num_data_consumed = l;
         } break;
         case MG_EV_HTTP_PART_END: {
             log_trace("%06s %04s", "(HTTP)", "part end");
