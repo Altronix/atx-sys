@@ -2,10 +2,12 @@ set(SOURCES
   atxupdate.c
   http.c
   http_route_env.c
+  http_route_update.c
   sys.c)
 set(HEADERS
   http.h
   http_route_env.h
+  http_route_update.h
   sys.h
   env.h
   klist.h

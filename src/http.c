@@ -1,5 +1,6 @@
 #include "http.h"
 #include "http_route_env.h"
+#include "http_route_update.h"
 #include "log.h"
 #include "updater.h"
 
@@ -227,47 +228,6 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
         case MG_EV_WEBSOCKET_CONTROL_FRAME:
             log_trace("%06s %04s", "(HTTP)", "Websocket ctrl frame");
             break;
-        case MG_EV_HTTP_MULTIPART_REQUEST:
-            log_trace("%06s %04s", "(HTTP)", "multipart request");
-            break;
-        case MG_EV_HTTP_PART_BEGIN: {
-            log_trace("%06s %04s", "(HTTP)", "part begin");
-            struct mg_http_multipart_part* mp = p;
-            http_s* http = user_data;
-            updater_init(&http->updater, mp->file_name, strlen(mp->file_name));
-            mp->user_data = http;
-        } break;
-        case MG_EV_HTTP_PART_DATA: {
-            log_trace("%06s %04s", "(HTTP)", "part data");
-            int l;
-            struct mg_http_multipart_part* mp = p;
-            http_s* http = user_data;
-            if (!(http && updater_active(&http->updater))) break;
-            if (!(updater_status(&http->updater) == UPDATER_STATUS_OK)) break;
-            l = updater_write(&http->updater, (void*)mp->data.p, mp->data.len);
-            mp->num_data_consumed = l;
-        } break;
-        case MG_EV_HTTP_PART_END: {
-            log_trace("%06s %04s", "(HTTP)", "part end");
-            struct mg_http_multipart_part* mp = p;
-            http_s* http = user_data;
-            int code = updater_status(&http->updater) == UPDATER_STATUS_FAIL
-                           ? 500
-                           : 200;
-            c->flags |= MG_F_SEND_AND_CLOSE;
-            c_printf_json(
-                c,
-                code,
-                "{\"error\":\"%s\",\"received\":%d,\"from\":\"%s\"}",
-                http_error_message(code),
-                http->updater.len,
-                mp->file_name);
-            mp->user_data = NULL;
-            updater_free(&http->updater);
-        } break;
-        case MG_EV_HTTP_MULTIPART_REQUEST_END:
-            log_trace("%06s %04s", "(HTTP)", "multipart request end");
-            break;
         default:
             log_error("%06s %04s %s (%d)", "(HTTP)", "Recv", "Unkown", ev);
             break;
@@ -277,13 +237,10 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
 void
 http_init(http_s* http, env_s* env)
 {
-#define ADD_ROUTE(http, path, fn, ctx) http_use(http, path, fn, ctx)
     memset(http, 0, sizeof(http_s));
     http->env = env;
     mg_mgr_init(&http->connections, http);
     http->routes = routes_map_create();
-    ADD_ROUTE(http, "/api/v1/env", route_env, http);
-#undef ADD_ROUTE
 }
 
 void
@@ -312,6 +269,11 @@ http_listen(http_s* http, const char* port)
     log_info("(HTTP) Listening... [http://*:%s]", port);
     http->http = mg_bind(&http->connections, port, ev_handler, http);
     mg_set_protocol_http_websocket(http->http);
+    mg_register_http_endpoint(
+        http->http, "/api/v1/update", MG_CB(update_handler, http));
+#define ADD_ROUTE(http, path, fn, ctx) http_use(http, path, fn, ctx)
+    ADD_ROUTE(http, "/api/v1/env", route_env, http);
+#undef ADD_ROUTE
 }
 
 void
