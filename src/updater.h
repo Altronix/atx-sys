@@ -36,7 +36,7 @@ typedef struct updater_progress_callbacks_s
     void (*status)(UPDATER_PROGRESS_STATUS);
     void (*source)(UPDATER_PROGRESS_SOURCE);
     void (*info)(const char*, uint32_t);
-    void (*step)(const char* name, uint32_t step, uint32_t total, uint32_t per);
+    void (*step)(const char* name, uint8_t step, uint8_t total, uint8_t per);
 } updater_progress_callbacks_s;
 
 typedef struct updater_progress_s

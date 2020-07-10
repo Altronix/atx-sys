@@ -41,6 +41,7 @@ typedef struct http_s
     struct mg_mgr connections;
     struct mg_serve_http_opts serve_opts;
     updater_s updater;
+    updater_progress_s updater_progress;
     env_s* env;
     routes_map_s* routes;
 } http_s;

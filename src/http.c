@@ -237,6 +237,41 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
     }
 }
 
+static void
+updater_progress_status(UPDATER_PROGRESS_STATUS status)
+{
+    log_info("(UPDATER PROGRESS) status %d", status);
+}
+
+static void
+updater_progress_source(UPDATER_PROGRESS_SOURCE source)
+{
+    log_info("(UPDATER PROGRESS) source %d", source);
+}
+
+static void
+updater_progress_info(const char* info, uint32_t len)
+{
+    log_info("(UPDATER PROGRESS) info %.*s", len, info);
+}
+
+static void
+updater_progress_step(
+    const char* name,
+    uint8_t step,
+    uint8_t total,
+    uint8_t per)
+{
+    log_info("(UPDATER PROGRESS) step %d", per);
+}
+
+updater_progress_callbacks_s updater_progress_callbacks = {
+    .status = updater_progress_status,
+    .source = updater_progress_source,
+    .info = updater_progress_info,
+    .step = updater_progress_step,
+};
+
 void
 http_init(http_s* http, env_s* env)
 {
@@ -244,12 +279,14 @@ http_init(http_s* http, env_s* env)
     http->env = env;
     mg_mgr_init(&http->connections, http);
     http->routes = routes_map_create();
+    updater_progress_init(&http->updater_progress, &updater_progress_callbacks);
 }
 
 void
 http_deinit(http_s* http)
 {
     updater_free(&http->updater);
+    updater_progress_free(&http->updater_progress);
     mg_mgr_free(&http->connections);
     routes_map_destroy(&http->routes);
 }
@@ -258,6 +295,7 @@ int
 http_poll(http_s* http, int32_t ms)
 {
     int err = mg_mgr_poll(&http->connections, ms);
+    updater_progress_poll(&http->updater_progress);
     return err;
 }
 

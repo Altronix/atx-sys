@@ -91,36 +91,39 @@ updater_progress_poll(updater_progress_s* u)
     if (u->ipc > 0) {
         // receive an ipc message
         err = progress_ipc_receive(&u->ipc, &msg);
-        if (!(err == sizeof(msg))) {
-            log_warn("(UPDATE) progress failed to receive proper message");
-            log_warn("(UPDATE) expect %d / received %d", sizeof(msg), err);
-            return;
-        }
-        if (msg.status != u->status || msg.status == FAILURE) {
-            u->status = msg.status;
-            if (u->cb->status) u->cb->status(u->status);
-        }
-        if (msg.source != u->source) {
-            u->source = msg.source;
-            if (u->cb->source) u->cb->source(u->source);
-        }
-        if (msg.infolen) {
-            if (u->cb->info) u->cb->info(msg.info, msg.infolen);
-        }
-        if ((msg.cur_step != u->step || msg.cur_percent != u->percent) &&
-            msg.cur_step) {
-            u->step = msg.cur_step;
-            u->percent = msg.cur_percent;
-            if (u->cb->step) {
-                u->cb->step(
-                    msg.cur_step ? msg.cur_image : "",
-                    msg.cur_step,
-                    msg.nsteps,
-                    msg.cur_percent);
+        if (err == sizeof(msg)) {
+            if (msg.status != u->status || msg.status == FAILURE) {
+                u->status = msg.status;
+                if (u->cb->status) u->cb->status(u->status);
+            }
+            if (msg.source != u->source) {
+                u->source = msg.source;
+                if (u->cb->source) u->cb->source(u->source);
+            }
+            if (msg.infolen) {
+                if (u->cb->info) u->cb->info(msg.info, msg.infolen);
+            }
+            if ((msg.cur_step != u->step || msg.cur_percent != u->percent) &&
+                msg.cur_step) {
+                u->step = msg.cur_step;
+                u->percent = msg.cur_percent;
+                if (u->cb->step) {
+                    u->cb->step(
+                        msg.cur_step ? msg.cur_image : "",
+                        msg.cur_step,
+                        msg.nsteps,
+                        msg.cur_percent);
+                }
             }
         }
     } else {
+        log_info("(UPDATER PROGRESS) connecting");
         u->ipc = progress_ipc_connect(false);
-        if (!(u->ipc < 0)) log_warn("(UPDATE) ipc failed to connect");
+        if (u->ipc > 0) {
+            err = set_blocking(u->ipc, false);
+            if (err) log_warn("(UPDATE) Failure to set non blocking mode!");
+        } else {
+            log_warn("(UPDATE) ipc failed to connect");
+        }
     }
 }

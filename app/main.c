@@ -69,8 +69,6 @@ main(int argc, char* argv[])
     config.port = "8080";
     args_parse(&config, argc, argv);
 
-    if (config.daemon && !(*config.log == '/' || *config.log == '\\')) {}
-
     signal(SIGINT, ctrlc);
     signal(SIGHUP, sighup);
 
