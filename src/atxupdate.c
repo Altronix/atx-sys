@@ -77,3 +77,9 @@ atxupdate_poll(atxupdate_s* u, uint32_t ms)
 {
     http_poll(&u->http, ms);
 }
+
+bool
+atxupdate_is_running(atxupdate_s* u)
+{
+    return !u->http.shutdown;
+}

@@ -40,6 +40,7 @@ typedef struct http_s
     struct mg_connection* https;
     struct mg_mgr connections;
     struct mg_serve_http_opts serve_opts;
+    bool shutdown;
     updater_s updater;
     updater_progress_s updater_progress;
     env_s* env;

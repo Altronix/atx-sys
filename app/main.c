@@ -74,7 +74,9 @@ main(int argc, char* argv[])
 
     atxupdate_s* atxupdate = atxupdate_create(&config);
 
-    while (running) atxupdate_poll(atxupdate, 50);
+    while (running && atxupdate_is_running(atxupdate)) {
+        atxupdate_poll(atxupdate, 50);
+    }
 
     atxupdate_destroy(&atxupdate);
     return 0;
