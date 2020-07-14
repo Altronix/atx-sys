@@ -239,31 +239,73 @@ ev_handler(struct mg_connection* c, int ev, void* p, void* user_data)
 }
 
 static void
-updater_progress_status(UPDATER_PROGRESS_STATUS status)
+updater_progress_status(void* ctx, UPDATER_PROGRESS_STATUS status)
 {
+    http_s* http = ctx;
+    int l;
+    char b[512];
+    const char* msg = updater_progress_status_message(status);
     log_info("(UPDATER PROGRESS) status %d", status);
+    l = snprintf(b, sizeof(b), "{\"type\":\"status\",\"status\":\"%s\"}", msg);
+    http_broadcast_json(http, 200, b, l);
 }
 
 static void
-updater_progress_source(UPDATER_PROGRESS_SOURCE source)
+updater_progress_source(void* ctx, UPDATER_PROGRESS_SOURCE source)
 {
+    http_s* http = ctx;
+    int l;
+    char b[512];
+    const char* msg = updater_progress_source_message(source);
     log_info("(UPDATER PROGRESS) source %d", source);
+    l = snprintf(b, sizeof(b), "{\"type\":\"source\",\"source\":\"%s\"}", msg);
+    http_broadcast_json(http, 200, b, l);
 }
 
 static void
-updater_progress_info(const char* info, uint32_t len)
+updater_progress_info(void* ctx, const char* info, uint32_t len)
 {
+    http_s* http = ctx;
+    char b[512];
+    int l;
     log_info("(UPDATER PROGRESS) info %.*s", len, info);
+    l = snprintf(
+        b,
+        sizeof(b),
+        "{"
+        "\"type\":\"info\","
+        "\"info\":\"%.*s\""
+        "}",
+        len,
+        info);
+    http_broadcast_json(http, 200, b, l);
 }
 
 static void
 updater_progress_step(
+    void* ctx,
     const char* name,
     uint8_t step,
     uint8_t total,
     uint8_t per)
 {
+    http_s* http = ctx;
+    char b[512];
+    int l;
     log_info("(UPDATER PROGRESS) step %d", per);
+    l = snprintf(
+        b,
+        sizeof(b),
+        "{"
+        "\"type\":\"step\","
+        "\"step\":%d,"
+        "\"total\":%d,"
+        "\"percent\":%d"
+        "}",
+        step,
+        total,
+        per);
+    http_broadcast_json(http, 200, b, l);
 }
 
 updater_progress_callbacks_s updater_progress_callbacks = {
@@ -280,7 +322,8 @@ http_init(http_s* http, env_s* env)
     http->env = env;
     mg_mgr_init(&http->connections, http);
     http->routes = routes_map_create();
-    updater_progress_init(&http->updater_progress, &updater_progress_callbacks);
+    updater_progress_init(
+        &http->updater_progress, &updater_progress_callbacks, http);
 }
 
 void
@@ -382,7 +425,9 @@ http_broadcast_json(http_s* http, int code, const char* fmt, ...)
         // TODO need __wrap_mg_next() to test broadcast output
         for (c = mg_next(&http->connections, NULL); c != NULL;
              c = mg_next(&http->connections, c)) {
-            mg_send_websocket_frame(c, WEBSOCKET_OP_TEXT, mem, len);
+            if (is_websocket(c)) {
+                mg_send_websocket_frame(c, WEBSOCKET_OP_TEXT, mem, len);
+            }
         }
     }
 }

@@ -33,10 +33,15 @@ typedef struct updater_s
 
 typedef struct updater_progress_callbacks_s
 {
-    void (*status)(UPDATER_PROGRESS_STATUS);
-    void (*source)(UPDATER_PROGRESS_SOURCE);
-    void (*info)(const char*, uint32_t);
-    void (*step)(const char* name, uint8_t step, uint8_t total, uint8_t per);
+    void (*status)(void*, UPDATER_PROGRESS_STATUS);
+    void (*source)(void*, UPDATER_PROGRESS_SOURCE);
+    void (*info)(void*, const char*, uint32_t);
+    void (*step)(
+        void*,
+        const char* name,
+        uint8_t step,
+        uint8_t total,
+        uint8_t per);
 } updater_progress_callbacks_s;
 
 typedef struct updater_progress_s
@@ -45,6 +50,7 @@ typedef struct updater_progress_s
     UPDATER_PROGRESS_STATUS status;
     UPDATER_PROGRESS_SOURCE source;
     updater_progress_callbacks_s* cb;
+    void* ctx;
     int step;
     int percent;
 } updater_progress_s;
@@ -57,8 +63,11 @@ enum UPDATER_STATUS updater_status(updater_s* updater);
 
 void updater_progress_init(
     updater_progress_s* u,
-    updater_progress_callbacks_s*);
+    updater_progress_callbacks_s*,
+    void* ctx);
 void updater_progress_free(updater_progress_s* u);
 void updater_progress_poll(updater_progress_s* u);
+const char* updater_progress_status_message(UPDATER_PROGRESS_STATUS status);
+const char* updater_progress_source_message(UPDATER_PROGRESS_SOURCE source);
 
 #endif /* UPDATER_H_ */

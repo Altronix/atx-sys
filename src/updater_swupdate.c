@@ -70,10 +70,14 @@ updater_status(updater_s* updater)
 }
 
 void
-updater_progress_init(updater_progress_s* u, updater_progress_callbacks_s* cb)
+updater_progress_init(
+    updater_progress_s* u,
+    updater_progress_callbacks_s* cb,
+    void* ctx)
 {
     memset(u, 0, sizeof(updater_progress_s));
     u->cb = cb;
+    u->ctx = ctx;
 }
 
 void
@@ -94,14 +98,14 @@ updater_progress_poll(updater_progress_s* u)
         if (err == sizeof(msg)) {
             if (msg.status != u->status || msg.status == FAILURE) {
                 u->status = msg.status;
-                if (u->cb->status) u->cb->status(u->status);
+                if (u->cb->status) u->cb->status(u->ctx, u->status);
             }
             if (msg.source != u->source) {
                 u->source = msg.source;
-                if (u->cb->source) u->cb->source(u->source);
+                if (u->cb->source) u->cb->source(u->ctx, u->source);
             }
             if (msg.infolen) {
-                if (u->cb->info) u->cb->info(msg.info, msg.infolen);
+                if (u->cb->info) u->cb->info(u->ctx, msg.info, msg.infolen);
             }
             if ((msg.cur_step != u->step || msg.cur_percent != u->percent) &&
                 msg.cur_step) {
@@ -109,6 +113,7 @@ updater_progress_poll(updater_progress_s* u)
                 u->percent = msg.cur_percent;
                 if (u->cb->step) {
                     u->cb->step(
+                        u->ctx,
                         msg.cur_step ? msg.cur_image : "",
                         msg.cur_step,
                         msg.nsteps,
@@ -126,4 +131,24 @@ updater_progress_poll(updater_progress_s* u)
             log_warn("(UPDATE) ipc failed to connect");
         }
     }
+}
+
+const char*
+updater_progress_status_message(UPDATER_PROGRESS_STATUS status)
+{
+    static const char* msgs[] = { "idle",    "start",      "run",
+                                  "success", "failure",    "download",
+                                  "done",    "subprocess", "progress" };
+    assert(status >= 0 && status < 9);
+    return msgs[status];
+}
+
+const char*
+updater_progress_source_message(UPDATER_PROGRESS_SOURCE source)
+{
+    static const char* msgs[] = {
+        "unknown", "webserver", "suricatta", "downloader", "local"
+    };
+    assert(source >= 0 && source < 5);
+    return msgs[source];
 }
