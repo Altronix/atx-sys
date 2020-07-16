@@ -1,6 +1,7 @@
 #include "http.h"
 #include "http_route_env.h"
 #include "http_route_kill.h"
+#include "http_route_network.h"
 #include "http_route_update.h"
 #include "log.h"
 #include "updater.h"
@@ -379,6 +380,7 @@ http_listen(http_s* http, const char* port)
     mg_set_protocol_http_websocket(http->http);
     mg_use(http, "/api/v1/update", update_handler, http);
     http_use(http, "/api/v1/env", route_env, http);
+    http_use(http, "/api/v1/network", route_network, http);
     http_use(http, "/api/v1/kill", route_kill, http);
 }
 
