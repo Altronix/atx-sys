@@ -10,3 +10,6 @@
 [submodule "external/http-parser"]
 	path = external/http-parser
 	url = https://github.com/nodejs/http-parser
+[submodule "external/swupdate"]
+	path = external/swupdate
+	url = https://github.com/sbabic/swupdate.git
