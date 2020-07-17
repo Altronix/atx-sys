@@ -5,6 +5,7 @@ set(SOURCES
   http_route_network.c
   http_route_kill.c
   http_route_update.c
+  json.c
   sys.c)
 set(HEADERS
   http.h
@@ -12,6 +13,8 @@ set(HEADERS
   http_route_network.h
   http_route_kill.h
   http_route_update.h
+  jsmn.h
+  json.h
   sys.h
   env.h
   klist.h
