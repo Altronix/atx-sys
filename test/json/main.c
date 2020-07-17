@@ -79,8 +79,6 @@ test_json_delve(void** context_p)
     assert_memory_equal(&sample_nest[t->start], "thisa-thata-vale", t->size);
     t = json_delve(sample_nest, toks, ".thisa.thata.valF");
     assert_null(t);
-
-    //
     t = json_delve(sample_nest, toks, ".thisa.thatb.valA");
     assert_non_null(t);
     assert_memory_equal(&sample_nest[t->start], "thisa-thatb-vala", t->size);
@@ -98,8 +96,6 @@ test_json_delve(void** context_p)
     assert_memory_equal(&sample_nest[t->start], "thisa-thatb-vale", t->size);
     t = json_delve(sample_nest, toks, ".thisa.thatb.valF");
     assert_null(t);
-
-    //
     t = json_delve(sample_nest, toks, ".thatb.thisa.valA");
     assert_non_null(t);
     assert_memory_equal(&sample_nest[t->start], "thatb-thisa-vala", t->size);
@@ -117,8 +113,6 @@ test_json_delve(void** context_p)
     assert_memory_equal(&sample_nest[t->start], "thatb-thisa-vale", t->size);
     t = json_delve(sample_nest, toks, ".thatb.thisa.valF");
     assert_null(t);
-
-    //
     t = json_delve(sample_nest, toks, ".thatb.thisb.valA");
     assert_non_null(t);
     assert_memory_equal(&sample_nest[t->start], "thatb-thisb-vala", t->size);
