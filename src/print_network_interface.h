@@ -4,8 +4,7 @@
 #include "private.h"
 
 int print_network_interface(
-    char* buff,
-    uint32_t* buffsz,
+    FILE* f,
     const char* meth,
     const char* ip,
     const char* sn,

@@ -13,6 +13,7 @@ typedef void env_ctx;
 typedef struct env_s
 {
     env_ctx* ctx;
+    bool valid;
 } env_s;
 
 int env_init(env_s* env, const char* path);

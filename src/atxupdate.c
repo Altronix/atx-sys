@@ -5,6 +5,7 @@
 #include "env.h"
 #include "http.h"
 #include "log.h"
+#include "print_network_interface.h"
 
 typedef struct atxupdate_s
 {
@@ -21,6 +22,8 @@ atxupdate_create(atxupdate_config_s* c)
     char logpath[2048] = { 0 };
     pid_t pid;
     memset(&pid, 0, sizeof(pid));
+    FILE* n = fopen("./test", "w+");
+    // print_network_interface(n, "DHCP", NULL, NULL, NULL, "tom");
 
     // Normalize log path (make absolute relative to start path)
     if (c->log) {
@@ -44,6 +47,7 @@ atxupdate_create(atxupdate_config_s* c)
     }
     atxupdate_s* u = malloc(sizeof(atxupdate_s));
     if (u) {
+        memset(u, 0, sizeof(atxupdate_s));
         const char* port = c->port ? c->port : ATX_UPDATE_HTTP_PORT;
         const char* env = c->env ? c->env : ATX_UPDATE_ENV_CONFIG_FILE;
         if (*logpath && (u->log = fopen(logpath, "a+"))) {

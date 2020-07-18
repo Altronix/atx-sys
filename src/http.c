@@ -363,7 +363,7 @@ int
 http_poll(http_s* http, int32_t ms)
 {
     int err = mg_mgr_poll(&http->connections, ms);
-    updater_progress_poll(&http->updater_progress);
+    if (http->env->valid) updater_progress_poll(&http->updater_progress);
     return err;
 }
 

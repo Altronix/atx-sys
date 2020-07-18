@@ -36,6 +36,7 @@ env_init(env_s* env, const char* path)
     }
 
     log_info("libubootenv load ok!");
+    env->valid = true;
     return ret;
 ERR:
     return ret;
@@ -44,8 +45,10 @@ ERR:
 void
 env_deinit(env_s* env)
 {
-    libuboot_close(env->ctx);
-    libuboot_exit(env->ctx);
+    if (env->valid) {
+        libuboot_close(env->ctx);
+        libuboot_exit(env->ctx);
+    }
     memset(env, 0, sizeof(env_s));
 }
 
