@@ -22,8 +22,6 @@ atxupdate_create(atxupdate_config_s* c)
     char logpath[2048] = { 0 };
     pid_t pid;
     memset(&pid, 0, sizeof(pid));
-    FILE* n = fopen("./test", "w+");
-    // print_network_interface(n, "DHCP", NULL, NULL, NULL, "tom");
 
     // Normalize log path (make absolute relative to start path)
     if (c->log) {
