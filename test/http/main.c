@@ -16,7 +16,9 @@ test_http_create(void** c_p)
     ((void)c_p);
     mongoose_spy_init();
     http_s http;
-    http_init(&http, NULL);
+    env_s env;
+    env_init(&env, "");
+    http_init(&http, &env);
     http_deinit(&http);
     mongoose_spy_deinit();
 }
@@ -44,7 +46,9 @@ test_http_simple_get(void** context_p)
 
     // Init http
     http_s http;
-    http_init(&http, NULL);
+    env_s env;
+    env_init(&env, "");
+    http_init(&http, &env);
     http_listen(&http, "80");
     http_use(&http, "/hello", test_http_hello_route, &pass);
 
@@ -107,7 +111,9 @@ test_http_simple_query(void** context_p)
 
     // Init http
     http_s http;
-    http_init(&http, NULL);
+    env_s env;
+    env_init(&env, "");
+    http_init(&http, &env);
     http_listen(&http, "80");
     http_use(&http, "/hello", test_http_query_route, &pass);
 
@@ -162,7 +168,9 @@ test_http_invalid_query(void** context_p)
 
     // Init http
     http_s http;
-    http_init(&http, NULL);
+    env_s env;
+    env_init(&env, "");
+    http_init(&http, &env);
     http_listen(&http, "80");
     http_use(&http, "/hello", test_http_invalid_query_route, &pass);
 
