@@ -15,6 +15,13 @@ typedef struct atxupdate_s
     FILE* log;
 } atxupdate_s;
 
+static void
+read_user_config(atxupdate_config_s* c)
+{
+    // TODO - if user config exists, load config. If not - create config and
+    // then load config
+}
+
 atxupdate_s*
 atxupdate_create(atxupdate_config_s* c)
 {
@@ -46,8 +53,8 @@ atxupdate_create(atxupdate_config_s* c)
     atxupdate_s* u = malloc(sizeof(atxupdate_s));
     if (u) {
         memset(u, 0, sizeof(atxupdate_s));
-        const char* port = c->port ? c->port : ATX_UPDATE_HTTP_PORT;
-        const char* env = c->env ? c->env : ATX_UPDATE_ENV_CONFIG_FILE;
+        const char* port = c->port ? c->port : ATX_SYS_HTTP_PORT;
+        const char* env = c->env ? c->env : ATX_SYS_ENV_CONFIG_FILE;
         if (*logpath && (u->log = fopen(logpath, "a+"))) {
             log_set_fd(&u->log);
             close(STDIN_FILENO);

@@ -8,6 +8,7 @@ typedef struct atxupdate_config_s
 {
     const char* log;
     const char* env;
+    const char* usr;
     const char* port;
     const char* www;
     bool daemon;

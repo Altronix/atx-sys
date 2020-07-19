@@ -26,7 +26,8 @@ sighup(int dummy)
 const char* usage =
     "Usage: atx-update [-pchd]\n"
     "  -p  HTTP port (default: 8080)\n"
-    "  -c  Bootloader Environment (default: /etc/fw_env.config)\n"
+    "  -e  Bootloader Environment (default: /etc/fw_env.config)\n"
+    "  -u  User configuration (default: /etc/atxsys.user.json)\n"
     "  -d  Detatch in daemon mode\n"
     "  -w  Serve webpage root dir\n"
     "  -h  Print this help menu\n";
@@ -43,11 +44,12 @@ args_parse(atxupdate_config_s* config, int argc, char* argv[])
 {
     int opt, count = 0;
     optind = 0;
-    while ((opt = getopt(argc, argv, "lwpchd?")) != -1) {
+    while ((opt = getopt(argc, argv, "lwpehdu?")) != -1) {
         count++;
         switch (opt) {
             case 'p': config->port = argv[optind]; break;
-            case 'c': config->env = argv[optind]; break;
+            case 'e': config->env = argv[optind]; break;
+            case 'u': config->usr = argv[optind]; break;
             case 'd': config->daemon = true; break;
             case 'l': config->log = argv[optind]; break;
             case 'w': config->www = argv[optind]; break;
@@ -65,8 +67,6 @@ main(int argc, char* argv[])
     pid_t pid;
     atxupdate_config_s config;
     memset(&config, 0, sizeof(atxupdate_config_s));
-    config.env = "/etc/fw_env.config";
-    config.port = "8080";
     args_parse(&config, argc, argv);
 
     signal(SIGINT, ctrlc);
