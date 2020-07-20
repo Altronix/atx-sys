@@ -1,5 +1,4 @@
 /* sys */
-#include "config.h"
 #include "private.h"
 
 /* app */

@@ -25,9 +25,9 @@ sighup(int dummy)
 
 const char* usage =
     "Usage: atx-update [-pchd]\n"
-    "  -p  HTTP port (default: 8080)\n"
-    "  -e  Bootloader Environment (default: /etc/fw_env.config)\n"
-    "  -u  User configuration (default: /etc/atxsys.user.json)\n"
+    "  -p  HTTP port (default: " ATX_SYS_HTTP_PORT ")\n"
+    "  -e  Bootloader Environment (default: " ATX_SYS_ENV_CONFIG_FILE ")\n"
+    "  -u  User configuration (default: " ATX_SYS_CONFIG_FILE ")\n"
     "  -d  Detatch in daemon mode\n"
     "  -w  Serve webpage root dir\n"
     "  -h  Print this help menu\n";
@@ -67,6 +67,9 @@ main(int argc, char* argv[])
     pid_t pid;
     atxupdate_config_s config;
     memset(&config, 0, sizeof(atxupdate_config_s));
+    config.port = ATX_SYS_HTTP_PORT;
+    config.env = ATX_SYS_ENV_CONFIG_FILE;
+    config.usr = ATX_SYS_USER_CONFIG_FILE;
     args_parse(&config, argc, argv);
 
     signal(SIGINT, ctrlc);

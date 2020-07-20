@@ -1,7 +1,6 @@
 #include "private.h"
 
 #include "altronix/atxupdate.h"
-#include "config.h"
 #include "env.h"
 #include "http.h"
 #include "log.h"
@@ -33,7 +32,7 @@ read_user_config(
     // If config file exists and can fit in buffer
     if (c->usr && *c->usr && !stat(c->usr, &st) && st.st_size < l &&
         (f = fopen(c->usr, "r"))) {
-        err = fread(b, st.st_size, 1, f);
+        err = fread(b, 1, st.st_size, f);
         if (!(err == st.st_size)) goto ERR;
         err = parse_network_interface(b, st.st_size, meth, ip, sn, gw, hn);
         if (err) goto ERR;
@@ -79,6 +78,7 @@ atxupdate_create(atxupdate_config_s* c)
     }
 
     // Normalize log path (make absolute relative to start path)
+    *b = '\0';
     if (c->log) {
         if (!(*c->log == '/' || *c->log == '\\')) {
             getcwd(b, sizeof(b));

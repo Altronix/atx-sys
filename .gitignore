@@ -25,6 +25,7 @@ config.status
 
 #cmake
 build/
+build-test
 build-linux/
 build-windows/
 target
