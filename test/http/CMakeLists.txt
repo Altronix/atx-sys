@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------------
 add_executable(test-http main.c)
 target_link_libraries(test-http
-                      atx-update-test
+                      atxsys-test
                       mongoose-mock
 		      cmocka)
 

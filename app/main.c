@@ -1,4 +1,4 @@
-#include "altronix/atxupdate.h"
+#include "altronix/atxsys.h"
 
 #include "stdarg.h"
 #include "stdbool.h"
@@ -40,7 +40,7 @@ print_usage_and_exit(int code)
 }
 
 static void
-args_parse(atxupdate_config_s* config, int argc, char* argv[])
+args_parse(atxsys_config_s* config, int argc, char* argv[])
 {
     int opt, count = 0;
     optind = 0;
@@ -65,8 +65,8 @@ main(int argc, char* argv[])
 {
     int err;
     pid_t pid;
-    atxupdate_config_s config;
-    memset(&config, 0, sizeof(atxupdate_config_s));
+    atxsys_config_s config;
+    memset(&config, 0, sizeof(atxsys_config_s));
     config.port = ATX_SYS_HTTP_PORT;
     config.env = ATX_SYS_ENV_CONFIG_FILE;
     config.usr = ATX_SYS_CONFIG_FILE;
@@ -75,12 +75,10 @@ main(int argc, char* argv[])
     signal(SIGINT, ctrlc);
     signal(SIGHUP, sighup);
 
-    atxupdate_s* atxupdate = atxupdate_create(&config);
+    atxsys_s* atxsys = atxsys_create(&config);
 
-    while (running && atxupdate_is_running(atxupdate)) {
-        atxupdate_poll(atxupdate, 50);
-    }
+    while (running && atxsys_is_running(atxsys)) { atxsys_poll(atxsys, 50); }
 
-    atxupdate_destroy(&atxupdate);
+    atxsys_destroy(&atxsys);
     return 0;
 }

@@ -36,7 +36,7 @@
 #define ATX_SYS_GW_DEFAULT "192.168.168.1"
 #endif
 
-typedef struct atxupdate_config_s
+typedef struct atxsys_config_s
 {
     const char* log;
     const char* env;
@@ -44,13 +44,13 @@ typedef struct atxupdate_config_s
     const char* port;
     const char* www;
     bool daemon;
-} atxupdate_config_s;
+} atxsys_config_s;
 
-typedef struct atxupdate_s atxupdate_s;
+typedef struct atxsys_s atxsys_s;
 
-atxupdate_s* atxupdate_create(atxupdate_config_s* config);
-void atxupdate_destroy(atxupdate_s**);
-void atxupdate_poll(atxupdate_s*, uint32_t);
-bool atxupdate_is_running(atxupdate_s* u);
+atxsys_s* atxsys_create(atxsys_config_s* config);
+void atxsys_destroy(atxsys_s**);
+void atxsys_poll(atxsys_s*, uint32_t);
+bool atxsys_is_running(atxsys_s* u);
 
 #endif /* ATXUPDATE_H */

@@ -1,5 +1,5 @@
 set(SOURCES
-  atxupdate.c
+  atxsys.c
   http.c
   http_route_env.c
   http_route_network.c
@@ -22,7 +22,7 @@ set(HEADERS
   klist.h
   khash.h
   containers.h)
-set(HEADERS_PUBLIC ../include/altronix/atxupdate.h log.h)
+set(HEADERS_PUBLIC ../include/altronix/atxsys.h log.h)
 
 set(LIBS mongoose-shared ${CMAKE_THREAD_LIBS_INIT} m z)
 list(APPEND definitions "-DMG_ENABLE_HTTP_STREAMING_MULTIPART")
@@ -42,20 +42,20 @@ else()
   list(APPEND definitions "-DEMU=FALSE")
 endif()
 
-add_library(atx-update-test STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(atx-update-test ${LIBS})
-target_include_directories(atx-update-test PUBLIC ./)
-target_include_directories(atx-update-test PUBLIC ../include)
-target_compile_definitions(atx-update-test PUBLIC ${definitions})
+add_library(atxsys-test STATIC ${SOURCES} ${HEADERS})
+target_link_libraries(atxsys-test ${LIBS})
+target_include_directories(atxsys-test PUBLIC ./)
+target_include_directories(atxsys-test PUBLIC ../include)
+target_compile_definitions(atxsys-test PUBLIC ${definitions})
 
-add_library(atx-update-static STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(atx-update-static ${LIBS})
-target_include_directories(atx-update-static PUBLIC ../include)
-target_compile_definitions(atx-update-static PUBLIC ${definitions})
-set_target_properties(atx-update-static PROPERTIES
+add_library(atxsys-static STATIC ${SOURCES} ${HEADERS})
+target_link_libraries(atxsys-static ${LIBS})
+target_include_directories(atxsys-static PUBLIC ../include)
+target_compile_definitions(atxsys-static PUBLIC ${definitions})
+set_target_properties(atxsys-static PROPERTIES
   PUBLIC_HEADER "${HEADERS_PUBLIC}"
-  OUTPUT_NAME "atx-update")
-install(TARGETS atx-update-static
+  OUTPUT_NAME "atxsys")
+install(TARGETS atxsys-static
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         PUBLIC_HEADER DESTINATION include/altronix)

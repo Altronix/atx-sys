@@ -1,22 +1,22 @@
 #include "private.h"
 
-#include "altronix/atxupdate.h"
+#include "altronix/atxsys.h"
 #include "env.h"
 #include "http.h"
 #include "log.h"
 #include "network_management.h"
 
-typedef struct atxupdate_s
+typedef struct atxsys_s
 {
     env_s env;
     http_s http;
     pid_t pid;
     FILE* log;
-} atxupdate_s;
+} atxsys_s;
 
 static int
 read_user_config(
-    atxupdate_config_s* c,
+    atxsys_config_s* c,
     char* b,
     uint32_t l,
     jsmn_value* meth,
@@ -63,8 +63,8 @@ ERR:
     return -1;
 }
 
-atxupdate_s*
-atxupdate_create(atxupdate_config_s* c)
+atxsys_s*
+atxsys_create(atxsys_config_s* c)
 {
     int err, spot = 0;
     char b[2048] = { 0 };
@@ -103,9 +103,9 @@ atxupdate_create(atxupdate_config_s* c)
         err = chdir("/");
         if (err < 0) exit(EXIT_FAILURE);
     }
-    atxupdate_s* u = malloc(sizeof(atxupdate_s));
+    atxsys_s* u = malloc(sizeof(atxsys_s));
     if (u) {
-        memset(u, 0, sizeof(atxupdate_s));
+        memset(u, 0, sizeof(atxsys_s));
         const char* port = c->port ? c->port : ATX_SYS_HTTP_PORT;
         const char* env = c->env ? c->env : ATX_SYS_ENV_CONFIG_FILE;
         if (*b && (u->log = fopen(b, "a+"))) {
@@ -123,25 +123,25 @@ atxupdate_create(atxupdate_config_s* c)
 }
 
 void
-atxupdate_destroy(atxupdate_s** update_p)
+atxsys_destroy(atxsys_s** update_p)
 {
-    atxupdate_s* u = *update_p;
+    atxsys_s* u = *update_p;
     *update_p = NULL;
     http_deinit(&u->http);
     env_deinit(&u->env);
     if (u->log) fclose(u->log);
-    memset(u, 0, sizeof(atxupdate_s));
+    memset(u, 0, sizeof(atxsys_s));
     free(u);
 }
 
 void
-atxupdate_poll(atxupdate_s* u, uint32_t ms)
+atxsys_poll(atxsys_s* u, uint32_t ms)
 {
     http_poll(&u->http, ms);
 }
 
 bool
-atxupdate_is_running(atxupdate_s* u)
+atxsys_is_running(atxsys_s* u)
 {
     return !u->http.shutdown;
 }

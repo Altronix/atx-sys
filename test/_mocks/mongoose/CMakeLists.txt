@@ -7,7 +7,7 @@ add_library(mongoose-mock
   parse_http.h)
 
 target_link_libraries(mongoose-mock
-  atx-update-test
+  atxsys-test
   http-parser
   mongoose-shared
   stdc++)
