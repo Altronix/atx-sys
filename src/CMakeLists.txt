@@ -30,6 +30,11 @@ list(APPEND definitions "-DMG_ENABLE_WEBSOCKET")
 list(APPEND definitions "-DMG_ENABLE_CALLBACK_USERDATA")
 append_log_level_compiler_flags(definitions)
 
+set(CONFIG_FILE "" CACHE STRING "User configuration file path")
+if(NOT "${CONFIG_FILE}" STREQUAL "")
+  list(APPEND definitions "-DATX_SYS_CONFIG_FILE=\"${CONFIG_FILE}\"")
+endif()
+
 if(${BUILD_EMU})
   list(APPEND SOURCES env_emu.c)
   list(APPEND SOURCES updater_emu.c)
