@@ -8,6 +8,12 @@
 #define JSMN_HEADER
 #include "jsmn.h"
 
+typedef struct jsmn_value
+{
+    const char* p;
+    uint32_t len;
+} jsmn_value;
+
 #define json_for_each_obj(i, t, obj)                                           \
     for (i = 0, t = (obj) + 1; i < (obj)->size; t = json_next(t + 1), i++)
 #define json_for_each_arr(i, t, arr)                                           \

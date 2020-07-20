@@ -5,7 +5,7 @@
 #include "env.h"
 #include "http.h"
 #include "log.h"
-#include "print_network_interface.h"
+#include "network_management.h"
 
 typedef struct atxupdate_s
 {
@@ -15,29 +15,77 @@ typedef struct atxupdate_s
     FILE* log;
 } atxupdate_s;
 
-static void
-read_user_config(atxupdate_config_s* c)
+static int
+read_user_config(
+    atxupdate_config_s* c,
+    char* b,
+    uint32_t l,
+    jsmn_value* meth,
+    jsmn_value* ip,
+    jsmn_value* sn,
+    jsmn_value* gw,
+    jsmn_value* hn)
 {
-    // TODO - if user config exists, load config. If not - create config and
-    // then load config
+    FILE* f;
+    struct stat st;
+    int err;
+
+    // If config file exists and can fit in buffer
+    if (c->usr && *c->usr && !stat(c->usr, &st) && st.st_size < l &&
+        (f = fopen(c->usr, "r"))) {
+        err = fread(b, st.st_size, 1, f);
+        if (!(err == st.st_size)) goto ERR;
+        err = parse_network_interface(b, st.st_size, meth, ip, sn, gw, hn);
+        if (err) goto ERR;
+        fclose(f);
+    }
+    return 0;
+ERR:
+    fclose(f);
+    return -1;
+}
+
+static int
+write_network_interface(
+    atxupdate_config_s* c,
+    const char* path,
+    jsmn_value* meth,
+    jsmn_value* ip,
+    jsmn_value* sn,
+    jsmn_value* gw,
+    jsmn_value* hn)
+{
+    int err = -1;
+    FILE* f;
+    if ((f = fopen(path, "w+"))) {
+        err = print_network_interface(f, meth, ip, sn, gw, hn);
+    }
+    return err;
 }
 
 atxupdate_s*
 atxupdate_create(atxupdate_config_s* c)
 {
     int err, spot = 0;
-    char logpath[2048] = { 0 };
+    char b[2048] = { 0 };
     pid_t pid;
     memset(&pid, 0, sizeof(pid));
+    jsmn_value meth, ip, sn, gw, hn;
+    const char* iface = "/etc/network/interface";
+
+    // Read user config, if valid config, write network interface
+    if (!read_user_config(c, b, sizeof(b), &meth, &ip, &sn, &gw, &hn)) {
+        write_network_interface(c, iface, &meth, &ip, &sn, &gw, &hn);
+    }
 
     // Normalize log path (make absolute relative to start path)
     if (c->log) {
         if (!(*c->log == '/' || *c->log == '\\')) {
-            getcwd(logpath, sizeof(logpath));
-            spot = strlen(logpath);
-            if (spot < sizeof(logpath) - spot) logpath[spot++] = '/';
+            getcwd(b, sizeof(b));
+            spot = strlen(b);
+            if (spot < sizeof(b) - spot) b[spot++] = '/';
         }
-        spot += snprintf(&logpath[spot], sizeof(logpath) - spot, "%s", c->log);
+        spot += snprintf(&b[spot], sizeof(b) - spot, "%s", c->log);
     }
 
     if (c->daemon) {
@@ -55,7 +103,7 @@ atxupdate_create(atxupdate_config_s* c)
         memset(u, 0, sizeof(atxupdate_s));
         const char* port = c->port ? c->port : ATX_SYS_HTTP_PORT;
         const char* env = c->env ? c->env : ATX_SYS_ENV_CONFIG_FILE;
-        if (*logpath && (u->log = fopen(logpath, "a+"))) {
+        if (*b && (u->log = fopen(b, "a+"))) {
             log_set_fd(&u->log);
             close(STDIN_FILENO);
             close(STDOUT_FILENO);
