@@ -69,7 +69,7 @@ main(int argc, char* argv[])
     memset(&config, 0, sizeof(atxupdate_config_s));
     config.port = ATX_SYS_HTTP_PORT;
     config.env = ATX_SYS_ENV_CONFIG_FILE;
-    config.usr = ATX_SYS_USER_CONFIG_FILE;
+    config.usr = ATX_SYS_CONFIG_FILE;
     args_parse(&config, argc, argv);
 
     signal(SIGINT, ctrlc);

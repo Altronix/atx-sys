@@ -12,7 +12,7 @@
 #include <cmocka.h>
 
 static void
-test_parse_network_interface(void** context_p)
+test_parse_network_config(void** context_p)
 {
     const char* b = "{"
                     "\"network\":"
@@ -21,12 +21,12 @@ test_parse_network_interface(void** context_p)
                     "\"sn\":\"255.255.0.0\","
                     "\"gw\":\"192.168.0.100\","
                     "\"meth\":\"static\","
-                    "\"hostname\":\"sample-network-id\""
+                    "\"hn\":\"sample-network-id\""
                     "}"
                     "}";
     jsmn_value meth, ip, sn, gw, hn;
     int err;
-    err = parse_network_interface(b, strlen(b), &meth, &ip, &sn, &gw, &hn);
+    err = parse_network_config(b, strlen(b), &meth, &ip, &sn, &gw, &hn);
     assert_int_equal(err, 0);
     assert_int_equal(meth.len, 6);
     assert_memory_equal("static", meth.p, meth.len);
@@ -47,7 +47,7 @@ main(int argc, char* argv[])
     ((void)argv);
     int err;
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_parse_network_interface),
+        cmocka_unit_test(test_parse_network_config),
     };
 
     err = cmocka_run_group_tests(tests, NULL, NULL);

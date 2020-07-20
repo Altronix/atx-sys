@@ -27,6 +27,18 @@
     "  wait-delay 15\n"                                                        \
     "  hostname %.*s\n"
 
+#define NETWORK_MANAGEMENT_JSON_FORMAT                                         \
+    "{"                                                                        \
+    "\"network\":"                                                             \
+    "{"                                                                        \
+    "\"meth\":\"%.*s\","                                                       \
+    "\"hn\":\"%.*s\","                                                         \
+    "\"ip\":\"%.*s\","                                                         \
+    "\"sn\":\"%.*s\","                                                         \
+    "\"gw\":\"%.*s\""                                                          \
+    "}"                                                                        \
+    "}"
+
 typedef struct tag_s
 {
     jsmn_value** value;
@@ -40,42 +52,42 @@ print_network_interface(
     jsmn_value* ip,
     jsmn_value* sn,
     jsmn_value* gw,
-    jsmn_value* hostname)
+    jsmn_value* hn)
 {
     int err;
     if (!strncmp(meth->p, "DHCP", meth->len) ||
         !strncmp(meth->p, "dhcp", meth->len) ||
         !strncmp(meth->p, "Dhcp", meth->len)) {
-        err = fprintf(f, HEADER COMMON DHCP, hostname->len, hostname->p);
+        err = fprintf(f, HEADER COMMON DHCP, hn->len, hn->p);
     } else {
         // clang-format off
         err = fprintf(
             f,
             HEADER COMMON STATIC,
-            ip->len,       ip->p,
-            sn->len,       sn->p,
-            gw->len,       gw->p,
-            hostname->len, hostname->p);
+            ip->len, ip->p,
+            sn->len, sn->p,
+            gw->len, gw->p,
+            hn->len, hn->p);
         // clang-format on
     }
     return err;
 }
 
 int
-parse_network_interface(
+parse_network_config(
     const char* buff,
     uint32_t len,
     jsmn_value* meth,
     jsmn_value* ip,
     jsmn_value* sn,
     jsmn_value* gw,
-    jsmn_value* hostname)
+    jsmn_value* hn)
 {
     tag_s tags[] = { { .key = ".network.ip", .value = &ip },
                      { .key = ".network.sn", .value = &sn },
                      { .key = ".network.gw", .value = &gw },
                      { .key = ".network.meth", .value = &meth },
-                     { .key = ".network.hostname", .value = &hostname } };
+                     { .key = ".network.hn", .value = &hn } };
     int err, i, n = sizeof(tags) / sizeof(tag_s);
     struct stat st;
     jsmn_parser p;
@@ -95,4 +107,25 @@ parse_network_interface(
     }
 
     return i == n ? 0 : -1;
+}
+
+int
+print_network_config(
+    FILE* f,
+    jsmn_value* meth,
+    jsmn_value* ip,
+    jsmn_value* sn,
+    jsmn_value* gw,
+    jsmn_value* hn)
+{
+    // clang-format off
+    return fprintf(
+        f,
+        NETWORK_MANAGEMENT_JSON_FORMAT,
+        meth->len, meth->p,
+        hn->len,   hn->p,
+        ip->len,   ip->p,
+        sn->len,   sn->p,
+        gw->len,   gw->p);
+    // clang-format on
 }

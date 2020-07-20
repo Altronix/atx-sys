@@ -27,39 +27,40 @@ read_user_config(
 {
     FILE* f;
     struct stat st;
-    int err;
+    int err = -1;
+    static const char *meth_default = ATX_SYS_METH_DEFAULT,
+                      *hn_default = ATX_SYS_HOSTNAME_DEFAULT,
+                      *ip_default = ATX_SYS_IP_DEFAULT,
+                      *sn_default = ATX_SYS_SN_DEFAULT,
+                      *gw_default = ATX_SYS_GW_DEFAULT;
 
-    // If config file exists and can fit in buffer
-    if (c->usr && *c->usr && !stat(c->usr, &st) && st.st_size < l &&
-        (f = fopen(c->usr, "r"))) {
+    // Invalid config file location
+    if (!(c->usr && *c->usr)) goto ERR;
+
+    err = stat(c->usr, &st);
+    if (!err && st.st_size < l && (f = fopen(c->usr, "r"))) {
+        log_info("(SYS) config file found [%s]", c->usr);
         err = fread(b, 1, st.st_size, f);
         if (!(err == st.st_size)) goto ERR;
-        err = parse_network_interface(b, st.st_size, meth, ip, sn, gw, hn);
+        err = parse_network_config(b, st.st_size, meth, ip, sn, gw, hn);
         if (err) goto ERR;
         fclose(f);
+    } else if (err && errno == ENOENT && (f = fopen(c->usr, "w+"))) {
+        log_info("(SYS) config file not found! ...creating [%s]", c->usr);
+        (meth->p = meth_default, meth->len = strlen(meth->p));
+        (hn->p = hn_default, hn->len = strlen(hn->p));
+        (ip->p = ip_default, ip->len = strlen(ip->p));
+        (sn->p = sn_default, sn->len = strlen(sn->p));
+        (gw->p = gw_default, gw->len = strlen(gw->p));
+        err = print_network_config(f, meth, ip, sn, gw, hn);
+        err = err <= 0 ? -1 : 0;
+        fclose(f);
     }
-    return 0;
+
+    return err;
 ERR:
     fclose(f);
     return -1;
-}
-
-static int
-write_network_interface(
-    atxupdate_config_s* c,
-    const char* path,
-    jsmn_value* meth,
-    jsmn_value* ip,
-    jsmn_value* sn,
-    jsmn_value* gw,
-    jsmn_value* hn)
-{
-    int err = -1;
-    FILE* f;
-    if ((f = fopen(path, "w+"))) {
-        err = print_network_interface(f, meth, ip, sn, gw, hn);
-    }
-    return err;
 }
 
 atxupdate_s*
@@ -70,11 +71,15 @@ atxupdate_create(atxupdate_config_s* c)
     pid_t pid;
     memset(&pid, 0, sizeof(pid));
     jsmn_value meth, ip, sn, gw, hn;
-    const char* iface = "/etc/network/interface";
+    FILE* f;
 
     // Read user config, if valid config, write network interface
-    if (!read_user_config(c, b, sizeof(b), &meth, &ip, &sn, &gw, &hn)) {
-        write_network_interface(c, iface, &meth, &ip, &sn, &gw, &hn);
+    if (!read_user_config(c, b, sizeof(b), &meth, &ip, &sn, &gw, &hn) &&
+        (f = fopen("/etc/network/interfaces", "w+"))) {
+        print_network_interface(f, &meth, &ip, &sn, &gw, &hn);
+        fclose(f);
+    } else {
+        log_error("(SYS) Failed to write /etc/network/interfaces");
     }
 
     // Normalize log path (make absolute relative to start path)
