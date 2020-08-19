@@ -36,6 +36,14 @@
 #define ATX_SYS_GW_DEFAULT "192.168.168.1"
 #endif
 
+#ifndef ATX_SYS_PRIMARY_DEFAULT
+#define ATX_SYS_PRIMARY_DEFAULT "tcp://192.168.168.100:33447"
+#endif
+
+#ifndef ATX_SYS_SECONDARY_DEFAULT
+#define ATX_SYS_SECONDARY_DEFAULT "tcp://192.168.168.100:33448"
+#endif
+
 typedef struct atxsys_config_s
 {
     const char* log;

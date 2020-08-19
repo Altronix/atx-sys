@@ -15,7 +15,7 @@ static void
 test_parse_network_config(void** context_p)
 {
     const char* b = "{"
-                    "\"network\":"
+                    "\"ipv4\":"
                     "{"
                     "\"ip\":\"192.168.0.44\","
                     "\"sn\":\"255.255.0.0\","

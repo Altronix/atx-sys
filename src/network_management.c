@@ -29,13 +29,18 @@
 
 #define NETWORK_MANAGEMENT_JSON_FORMAT                                         \
     "{"                                                                        \
-    "\"network\":"                                                             \
+    "\"ipv4\":"                                                                \
     "{"                                                                        \
     "\"meth\":\"%.*s\","                                                       \
     "\"hn\":\"%.*s\","                                                         \
     "\"ip\":\"%.*s\","                                                         \
     "\"sn\":\"%.*s\","                                                         \
     "\"gw\":\"%.*s\""                                                          \
+    "},"                                                                       \
+    "\"ipv4\":"                                                                \
+    "{"                                                                        \
+    "\"primary\":\"%.*s\","                                                    \
+    "\"secondary\":\"%.*s\""                                                   \
     "}"                                                                        \
     "}"
 
@@ -83,11 +88,11 @@ parse_network_config(
     jsmn_value* gw,
     jsmn_value* hn)
 {
-    tag_s tags[] = { { .key = ".network.ip", .value = &ip },
-                     { .key = ".network.sn", .value = &sn },
-                     { .key = ".network.gw", .value = &gw },
-                     { .key = ".network.meth", .value = &meth },
-                     { .key = ".network.hn", .value = &hn } };
+    tag_s tags[] = { { .key = ".ipv4.ip", .value = &ip },
+                     { .key = ".ipv4.sn", .value = &sn },
+                     { .key = ".ipv4.gw", .value = &gw },
+                     { .key = ".ipv4.meth", .value = &meth },
+                     { .key = ".ipv4.hn", .value = &hn } };
     int err, i, n = sizeof(tags) / sizeof(tag_s);
     struct stat st;
     jsmn_parser p;
@@ -116,7 +121,9 @@ print_network_config(
     jsmn_value* ip,
     jsmn_value* sn,
     jsmn_value* gw,
-    jsmn_value* hn)
+    jsmn_value* hn,
+    jsmn_value* pri,
+    jsmn_value* sec)
 {
     // clang-format off
     return fprintf(
@@ -126,7 +133,10 @@ print_network_config(
         hn->len,   hn->p,
         ip->len,   ip->p,
         sn->len,   sn->p,
-        gw->len,   gw->p);
+        gw->len,   gw->p,
+        pri->len,  pri->p,
+        sec->len,  sec->p
+        );
     // clang-format on
 }
 
@@ -134,17 +144,21 @@ int
 print_network_config_toks(
     FILE* f,
     const char* b,
-    const jsmntok_t* meth,
-    const jsmntok_t* ip,
-    const jsmntok_t* sn,
-    const jsmntok_t* gw,
-    const jsmntok_t* hn)
+    const jsmntok_t* tmeth,
+    const jsmntok_t* tip,
+    const jsmntok_t* tsn,
+    const jsmntok_t* tgw,
+    const jsmntok_t* thn,
+    const jsmntok_t* tpri,
+    const jsmntok_t* tsec)
 {
-    jsmn_value vmeth, vip, vsn, vgw, vhn;
-    vmeth = json_tok_value(b, meth);
-    vip = json_tok_value(b, ip);
-    vsn = json_tok_value(b, sn);
-    vgw = json_tok_value(b, gw);
-    vhn = json_tok_value(b, hn);
-    return print_network_config(f, &vmeth, &vip, &vsn, &vgw, &vhn);
+    jsmn_value meth, ip, sn, gw, hn, pri, sec;
+    meth = json_tok_value(b, tmeth);
+    ip = json_tok_value(b, tip);
+    sn = json_tok_value(b, tsn);
+    gw = json_tok_value(b, tgw);
+    hn = json_tok_value(b, thn);
+    pri = json_tok_value(b, tpri);
+    sec = json_tok_value(b, tsec);
+    return print_network_config(f, &meth, &ip, &sn, &gw, &hn, &pri, &sec);
 }

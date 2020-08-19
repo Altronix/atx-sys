@@ -23,7 +23,9 @@ read_user_config(
     jsmn_value* ip,
     jsmn_value* sn,
     jsmn_value* gw,
-    jsmn_value* hn)
+    jsmn_value* hn,
+    jsmn_value* pri,
+    jsmn_value* sec)
 {
     FILE* f;
     struct stat st;
@@ -32,7 +34,9 @@ read_user_config(
                       *hn_default = ATX_SYS_HOSTNAME_DEFAULT,
                       *ip_default = ATX_SYS_IP_DEFAULT,
                       *sn_default = ATX_SYS_SN_DEFAULT,
-                      *gw_default = ATX_SYS_GW_DEFAULT;
+                      *gw_default = ATX_SYS_GW_DEFAULT,
+                      *pri_default = ATX_SYS_PRIMARY_DEFAULT,
+                      *sec_default = ATX_SYS_SECONDARY_DEFAULT;
 
     // Invalid config file location
     if (!(c->usr && *c->usr)) goto ERR;
@@ -52,7 +56,9 @@ read_user_config(
         (ip->p = ip_default, ip->len = strlen(ip->p));
         (sn->p = sn_default, sn->len = strlen(sn->p));
         (gw->p = gw_default, gw->len = strlen(gw->p));
-        err = print_network_config(f, meth, ip, sn, gw, hn);
+        (pri->p = pri_default, pri->len = strlen(pri->p));
+        (sec->p = sec_default, sec->len = strlen(sec->p));
+        err = print_network_config(f, meth, ip, sn, gw, hn, pri, sec);
         err = err <= 0 ? -1 : 0;
         fclose(f);
     }
@@ -70,13 +76,13 @@ atxsys_create(atxsys_config_s* c)
     char b[2048] = { 0 };
     pid_t pid;
     memset(&pid, 0, sizeof(pid));
-    jsmn_value meth, ip, sn, gw, hn;
+    jsmn_value m, ip, sn, gw, hn, p, s;
     FILE* f;
 
     // Read user config, if valid config, write network interface
-    if (!read_user_config(c, b, sizeof(b), &meth, &ip, &sn, &gw, &hn) &&
+    if (!read_user_config(c, b, sizeof(b), &m, &ip, &sn, &gw, &hn, &p, &s) &&
         (f = fopen("/etc/network/interfaces", "w+"))) {
-        print_network_interface(f, &meth, &ip, &sn, &gw, &hn);
+        print_network_interface(f, &m, &ip, &sn, &gw, &hn);
         fclose(f);
     } else {
         log_error("(SYS) Failed to write /etc/network/interfaces");
