@@ -44,10 +44,11 @@ typedef struct http_s
     updater_s updater;
     updater_progress_s updater_progress;
     env_s* env;
+    const char* network_config;
     routes_map_s* routes;
 } http_s;
 
-void http_init(http_s* http, env_s* env);
+void http_init(http_s* http, env_s* env, const char* nconfig);
 void http_deinit(http_s* http);
 int http_poll(http_s*, int32_t);
 void http_listen(http_s* http, const char* port);

@@ -340,10 +340,11 @@ updater_progress_callbacks_s updater_progress_callbacks = {
 };
 
 void
-http_init(http_s* http, env_s* env)
+http_init(http_s* http, env_s* env, const char* nconfig)
 {
     memset(http, 0, sizeof(http_s));
     http->env = env;
+    http->network_config = nconfig;
     mg_mgr_init(&http->connections, http);
     http->routes = routes_map_create();
     updater_progress_init(
