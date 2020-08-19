@@ -42,11 +42,11 @@ put(route_context* ctx, uint32_t l, const char* b)
     const jsmntok_t *m, *ip, *sn, *gw, *hn, *pri, *sec;
     err = jsmn_parse(&p, b, l, toks, 256);
     if ((err > 0) && //
-        (m = json_delve(b, toks, ".network.ipv4.m")) &&
-        (ip = json_delve(b, toks, ".network.ipv4.ip")) &&
-        (sn = json_delve(b, toks, ".network.ipv4.sn")) &&
-        (gw = json_delve(b, toks, ".network.ipv4.gw")) &&
-        (hn = json_delve(b, toks, ".network.ipv4.hn")) &&
+        (m = json_delve(b, toks, ".ipv4.meth")) &&
+        (ip = json_delve(b, toks, ".ipv4.ip")) &&
+        (sn = json_delve(b, toks, ".ipv4.sn")) &&
+        (gw = json_delve(b, toks, ".ipv4.gw")) &&
+        (hn = json_delve(b, toks, ".ipv4.hn")) &&
         (pri = json_delve(b, toks, ".dashboard.primary")) &&
         (sec = json_delve(b, toks, ".dashboard.secondary"))) {
         if ((f = fopen(http->network_config, "w"))) {
