@@ -18,7 +18,7 @@ get(route_context* ctx)
         assert(mem);
         err = fread(mem, 1, n, f);
         assert(err == n);
-        mem[n - 1] = 0;
+        mem[n] = 0;
         http_printf_json(ctx->connection, 200, mem);
         free(mem);
         fclose(f);
