@@ -129,3 +129,22 @@ print_network_config(
         gw->len,   gw->p);
     // clang-format on
 }
+
+int
+print_network_config_toks(
+    FILE* f,
+    const char* b,
+    const jsmntok_t* meth,
+    const jsmntok_t* ip,
+    const jsmntok_t* sn,
+    const jsmntok_t* gw,
+    const jsmntok_t* hn)
+{
+    jsmn_value vmeth, vip, vsn, vgw, vhn;
+    vmeth = json_tok_value(b, meth);
+    vip = json_tok_value(b, ip);
+    vsn = json_tok_value(b, sn);
+    vgw = json_tok_value(b, gw);
+    vhn = json_tok_value(b, hn);
+    return print_network_config(f, &vmeth, &vip, &vsn, &vgw, &vhn);
+}

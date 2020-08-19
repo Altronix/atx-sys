@@ -66,6 +66,23 @@ json_tok_streq(const char* buffer, const jsmntok_t* tok, const char* str)
     return strncmp(buffer + tok->start, str, tok->end - tok->start) == 0;
 }
 
+jsmn_value
+json_tok_value(const char* b, const jsmntok_t* t)
+{
+    jsmn_value ret;
+    ret.p = &b[t->start];
+    ret.len = t->end - t->start;
+    return ret;
+}
+
+jsmn_value
+json_delve_value(const char* buff, jsmntok_t* tok, const char* guide)
+{
+    jsmn_value ret = { .p = NULL, .len = 0 };
+    const jsmntok_t* t = json_delve(buff, tok, guide);
+    return t ? json_tok_value(buff, t) : ret;
+}
+
 const jsmntok_t*
 json_delve(const char* buf, const jsmntok_t* tok, const char* guide)
 {

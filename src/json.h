@@ -25,6 +25,9 @@ const jsmntok_t*
 json_get_member(const char* buffer, const jsmntok_t tok[], const char* label);
 const jsmntok_t* json_get_arr(const jsmntok_t tok[], size_t index);
 bool json_tok_streq(const char* buffer, const jsmntok_t* tok, const char* str);
+jsmn_value json_tok_value(const char* b, const jsmntok_t* t);
+jsmn_value
+json_delve_value(const char* buff, jsmntok_t* tok, const char* guide);
 const jsmntok_t*
 json_delve(const char* buf, const jsmntok_t* tok, const char* guide);
 int json_to_u64(const char* buffer, const jsmntok_t* tok, uint64_t* ret);

@@ -183,6 +183,17 @@ __wrap_vfprintf(FILE* f, const char* fmt, va_list list)
     }
 }
 
+int
+__wrap_fprintf(FILE* f, const char* fmt, ...)
+{
+    int ret;
+    va_list list;
+    va_start(list, fmt);
+    ret = __wrap_vfprintf(f, fmt, list);
+    va_end(list);
+    return ret;
+}
+
 // This is a simple mock that simply sets the callers param with a control
 // Doesn't support much.
 // IE:
