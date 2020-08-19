@@ -1,5 +1,6 @@
 #include "http_route_network.h"
 #include "log.h"
+#include <sys/ioctl.h>
 static const char* network = "{"
                              "\"network\":"
                              "{"
@@ -34,20 +35,31 @@ static const char* network = "{"
                              "}"
                              "}";
 
+// TODO needs test
 static void
 get(route_context* ctx)
 {
-    http_printf_json(ctx->connection, 200, network);
+    http_s* http = ctx->context;
+    int err, n = 0;
+    char* mem;
+    FILE* f = fopen(http->network_config, "r");
+    if (f) {
+        ioctl(fileno(f), FIONREAD, &n);
+        mem = malloc(n + 1);
+        assert(mem);
+        err = fread(mem, 1, n, f);
+        assert(err == n);
+        http_printf_json(ctx->connection, 200, mem);
+        free(mem);
+        fclose(f);
+    } else {
+        const char* err404 = "{\"error\":\"Not found\"}";
+        http_printf_json(ctx->connection, 404, err404);
+    }
 }
 
 static void
-post(route_context* ctx)
-{
-    // TODO
-}
-
-static void
-put(route_context* ctx)
+put(route_context* ctx, uint32_t l, const char* b)
 {
     // TODO
 }
@@ -63,8 +75,8 @@ route_network(route_context* ctx, HTTP_METHOD meth, uint32_t l, const char* b)
 {
     switch (meth) {
         case HTTP_METHOD_GET: get(ctx); break;
-        case HTTP_METHOD_PUT: put(ctx); break;
-        case HTTP_METHOD_POST: post(ctx); break;
+        case HTTP_METHOD_PUT:
+        case HTTP_METHOD_POST: put(ctx, l, b); break;
         case HTTP_METHOD_DELETE: del(ctx); break;
     }
 }
