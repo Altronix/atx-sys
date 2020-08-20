@@ -12,6 +12,10 @@
 #define ATX_SYS_CONFIG_FILE "/etc/atx.config.sys.json"
 #endif
 
+#ifndef ATX_SYS_LOG_FILE_DEFAULT
+#define ATX_SYS_LOG_FILE_DEFAULT "/var/log/atx-sys.log"
+#endif
+
 #ifndef ATX_SYS_HTTP_PORT
 #define ATX_SYS_HTTP_PORT "8080"
 #endif

@@ -24,11 +24,12 @@ sighup(int dummy)
 {}
 
 const char* usage =
-    "Usage: atx-update [-pchd]\n"
+    "Usage: atx-update [-pchdl]\n"
     "  -p  HTTP port (default: " ATX_SYS_HTTP_PORT ")\n"
     "  -e  Bootloader Environment (default: " ATX_SYS_ENV_CONFIG_FILE ")\n"
     "  -u  User configuration (default: " ATX_SYS_CONFIG_FILE ")\n"
     "  -d  Detatch in daemon mode\n"
+    "  -l  Log file (default: " ATX_SYS_LOG_FILE_DEFAULT ")\n"
     "  -w  Serve webpage root dir\n"
     "  -h  Print this help menu\n";
 
