@@ -1,3 +1,3 @@
-add_executable(atxsys main.c)
-target_link_libraries(atxsys atxsys-static)
-install(TARGETS atxsys RUNTIME DESTINATION bin)
+add_executable(atx-sys main.c)
+target_link_libraries(atx-sys atxsys-static)
+install(TARGETS atx-sys RUNTIME DESTINATION bin)
