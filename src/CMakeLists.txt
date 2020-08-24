@@ -1,6 +1,7 @@
 set(SOURCES
   atxsys.c
   http.c
+  http_route_about.c
   http_route_env.c
   http_route_network.c
   http_route_kill.c
@@ -10,6 +11,7 @@ set(SOURCES
   sys.c)
 set(HEADERS
   http.h
+  http_route_about.h
   http_route_env.h
   http_route_network.h
   http_route_kill.h

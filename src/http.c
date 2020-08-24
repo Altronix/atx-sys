@@ -1,4 +1,5 @@
 #include "http.h"
+#include "http_route_about.h"
 #include "http_route_env.h"
 #include "http_route_kill.h"
 #include "http_route_network.h"
@@ -383,6 +384,7 @@ http_listen(http_s* http, const char* port)
     http_use(http, "/api/v1/env", route_env, http);
     http_use(http, "/api/v1/network", route_network, http);
     http_use(http, "/api/v1/kill", route_kill, http);
+    http_use(http, "/api/v1/about", route_about, http);
 }
 
 void
