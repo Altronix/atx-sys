@@ -46,11 +46,9 @@ put(route_context* ctx, uint32_t l, const char* b)
         (ip = json_delve(b, toks, ".ipv4.ip")) &&
         (sn = json_delve(b, toks, ".ipv4.sn")) &&
         (gw = json_delve(b, toks, ".ipv4.gw")) &&
-        (hn = json_delve(b, toks, ".ipv4.hn")) &&
-        (pri = json_delve(b, toks, ".dashboard.primary")) &&
-        (sec = json_delve(b, toks, ".dashboard.secondary"))) {
+        (hn = json_delve(b, toks, ".ipv4.hn"))) {
         if ((f = fopen(http->network_config, "w"))) {
-            err = print_network_config_toks(f, b, m, ip, sn, gw, hn, pri, sec);
+            err = print_network_config_toks(f, b, m, ip, sn, gw, hn);
             if (!(err < 0)) {
                 http_printf_json(ctx->connection, 200, r);
             } else {

@@ -30,9 +30,7 @@ int print_network_config(
     jsmn_value* ip,
     jsmn_value* sn,
     jsmn_value* gw,
-    jsmn_value* hn,
-    jsmn_value* pri,
-    jsmn_value* sec);
+    jsmn_value* hn);
 int print_network_config_toks(
     FILE* f,
     const char* b,
@@ -40,8 +38,6 @@ int print_network_config_toks(
     const jsmntok_t* ip,
     const jsmntok_t* sn,
     const jsmntok_t* gw,
-    const jsmntok_t* hn,
-    const jsmntok_t* pri,
-    const jsmntok_t* sec);
+    const jsmntok_t* hn);
 
 #endif /* NETWORK_MANAGEMENT_H */

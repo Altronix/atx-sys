@@ -34,9 +34,7 @@ read_user_config(
                       *hn_default = ATX_SYS_HOSTNAME_DEFAULT,
                       *ip_default = ATX_SYS_IP_DEFAULT,
                       *sn_default = ATX_SYS_SN_DEFAULT,
-                      *gw_default = ATX_SYS_GW_DEFAULT,
-                      *pri_default = ATX_SYS_PRIMARY_DEFAULT,
-                      *sec_default = ATX_SYS_SECONDARY_DEFAULT;
+                      *gw_default = ATX_SYS_GW_DEFAULT;
 
     // Invalid config file location
     if (!(c->usr && *c->usr)) goto ERR;
@@ -56,9 +54,7 @@ read_user_config(
         (ip->p = ip_default, ip->len = strlen(ip->p));
         (sn->p = sn_default, sn->len = strlen(sn->p));
         (gw->p = gw_default, gw->len = strlen(gw->p));
-        (pri->p = pri_default, pri->len = strlen(pri->p));
-        (sec->p = sec_default, sec->len = strlen(sec->p));
-        err = print_network_config(f, meth, ip, sn, gw, hn, pri, sec);
+        err = print_network_config(f, meth, ip, sn, gw, hn);
         err = err <= 0 ? -1 : 0;
         fclose(f);
     }

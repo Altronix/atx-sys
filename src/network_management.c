@@ -36,11 +36,6 @@
     "\"ip\":\"%.*s\","                                                         \
     "\"sn\":\"%.*s\","                                                         \
     "\"gw\":\"%.*s\""                                                          \
-    "},"                                                                       \
-    "\"dashboard\":"                                                           \
-    "{"                                                                        \
-    "\"primary\":\"%.*s\","                                                    \
-    "\"secondary\":\"%.*s\""                                                   \
     "}"                                                                        \
     "}"
 
@@ -121,9 +116,7 @@ print_network_config(
     jsmn_value* ip,
     jsmn_value* sn,
     jsmn_value* gw,
-    jsmn_value* hn,
-    jsmn_value* pri,
-    jsmn_value* sec)
+    jsmn_value* hn)
 {
     // clang-format off
     return fprintf(
@@ -133,9 +126,7 @@ print_network_config(
         hn->len,   hn->p,
         ip->len,   ip->p,
         sn->len,   sn->p,
-        gw->len,   gw->p,
-        pri->len,  pri->p,
-        sec->len,  sec->p
+        gw->len,   gw->p
         );
     // clang-format on
 }
@@ -148,17 +139,13 @@ print_network_config_toks(
     const jsmntok_t* tip,
     const jsmntok_t* tsn,
     const jsmntok_t* tgw,
-    const jsmntok_t* thn,
-    const jsmntok_t* tpri,
-    const jsmntok_t* tsec)
+    const jsmntok_t* thn)
 {
-    jsmn_value meth, ip, sn, gw, hn, pri, sec;
+    jsmn_value meth, ip, sn, gw, hn;
     meth = json_tok_value(b, tmeth);
     ip = json_tok_value(b, tip);
     sn = json_tok_value(b, tsn);
     gw = json_tok_value(b, tgw);
     hn = json_tok_value(b, thn);
-    pri = json_tok_value(b, tpri);
-    sec = json_tok_value(b, tsec);
-    return print_network_config(f, &meth, &ip, &sn, &gw, &hn, &pri, &sec);
+    return print_network_config(f, &meth, &ip, &sn, &gw, &hn);
 }
