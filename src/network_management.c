@@ -8,24 +8,30 @@
 
 #define COMMON                                                                 \
     "auto lo\n"                                                                \
-    "iface lo inet loopback\n\n"
+    "iface lo inet loopback\n\n"                                               \
+    "iface eth0 inet static\n"                                                 \
+    "  address 127.0.0.1\n"                                                    \
+    "  netmask 255.255.255.0\n\n"
 
 #define STATIC                                                                 \
-    "auto eth0\n"                                                              \
-    "iface eth0 inet static\n"                                                 \
+    "iface eth0.10 inet static\n"                                              \
     "  address %.*s\n"                                                         \
     "  netmask %.*s\n"                                                         \
     "  gateway %.*s\n"                                                         \
     "  pre-up /etc/network/nfs_check\n"                                        \
     "  wait-delay 15\n"                                                        \
-    "  hostname %.*s\n"
+    "  hostname %.*s\n\n"
 
 #define DHCP                                                                   \
-    "auto eth0\n"                                                              \
-    "iface eth0 inet dhcp\n"                                                   \
+    "iface eth0.10 inet dhcp\n"                                                \
     "  pre-up /etc/network/nfs_check\n"                                        \
     "  wait-delay 15\n"                                                        \
-    "  hostname %.*s\n"
+    "  hostname %.*s\n\n"
+
+#define DEVICE_LAN                                                             \
+    "iface eth0.20 inet static\n"                                              \
+    "  address 192.168.168.100\n"                                              \
+    "  netmask 255.255.255.0\n"
 
 #define NETWORK_MANAGEMENT_JSON_FORMAT                                         \
     "{"                                                                        \
@@ -58,12 +64,12 @@ print_network_interface(
     if (!strncmp(meth->p, "DHCP", meth->len) ||
         !strncmp(meth->p, "dhcp", meth->len) ||
         !strncmp(meth->p, "Dhcp", meth->len)) {
-        err = fprintf(f, HEADER COMMON DHCP, hn->len, hn->p);
+        err = fprintf(f, HEADER COMMON DHCP DEVICE_LAN, hn->len, hn->p);
     } else {
         // clang-format off
         err = fprintf(
             f,
-            HEADER COMMON STATIC,
+            HEADER COMMON STATIC DEVICE_LAN,
             ip->len, ip->p,
             sn->len, sn->p,
             gw->len, gw->p,
